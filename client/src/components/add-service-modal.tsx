@@ -31,8 +31,10 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
-const addServiceFormSchema = insertServiceSchema.extend({
-  availableVersions: z.string().min(1, "At least one version is required"),
+const addServiceFormSchema = insertServiceSchema.omit({
+  availableVersions: true,
+  icon: true,
+  iconColor: true,
 });
 
 type AddServiceFormData = z.infer<typeof addServiceFormSchema>;
@@ -46,14 +48,25 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  // Random icon and color selection
+  const getRandomIcon = () => {
+    const icons = [
+      "fas fa-cube", "fas fa-shield-alt", "fas fa-credit-card", "fas fa-envelope",
+      "fas fa-users", "fas fa-database", "fas fa-server", "fas fa-cloud"
+    ];
+    return icons[Math.floor(Math.random() * icons.length)];
+  };
+
+  const getRandomColor = () => {
+    const colors = ["blue", "green", "purple", "yellow", "red"];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
   const form = useForm<AddServiceFormData>({
     resolver: zodResolver(addServiceFormSchema),
     defaultValues: {
       name: "",
       description: "",
-      icon: "fas fa-cube",
-      iconColor: "blue",
-      availableVersions: "",
       bauVersion: "",
       uatVersion: "",
       prodVersion: "",
@@ -85,17 +98,17 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
   });
 
   const onSubmit = (data: AddServiceFormData) => {
-    const versions = data.availableVersions
-      .split(",")
-      .map(v => v.trim())
-      .filter(v => v.length > 0);
+    // Generate available versions from the provided versions
+    const allVersions = [data.bauVersion, data.uatVersion, data.prodVersion]
+      .filter(v => v && v.trim().length > 0)
+      .filter((v, i, arr) => arr.indexOf(v) === i); // Remove duplicates
 
     const serviceData: InsertService = {
       name: data.name,
       description: data.description,
-      icon: data.icon,
-      iconColor: data.iconColor,
-      availableVersions: versions,
+      icon: getRandomIcon(),
+      iconColor: getRandomColor(),
+      availableVersions: allVersions,
       bauVersion: data.bauVersion,
       uatVersion: data.uatVersion,
       prodVersion: data.prodVersion,
@@ -104,24 +117,6 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
     createServiceMutation.mutate(serviceData);
   };
 
-  const iconOptions = [
-    { value: "fas fa-cube", label: "Cube" },
-    { value: "fas fa-shield-alt", label: "Shield" },
-    { value: "fas fa-credit-card", label: "Credit Card" },
-    { value: "fas fa-envelope", label: "Envelope" },
-    { value: "fas fa-users", label: "Users" },
-    { value: "fas fa-database", label: "Database" },
-    { value: "fas fa-server", label: "Server" },
-    { value: "fas fa-cloud", label: "Cloud" },
-  ];
-
-  const colorOptions = [
-    { value: "blue", label: "Blue" },
-    { value: "green", label: "Green" },
-    { value: "purple", label: "Purple" },
-    { value: "yellow", label: "Yellow" },
-    { value: "red", label: "Red" },
-  ];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -129,56 +124,29 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
         <DialogHeader>
           <DialogTitle>Add New Service</DialogTitle>
           <DialogDescription>
-            Create a new microservice entry with version information
+            Create a new microservice entry with version information. Icon and color will be randomly assigned.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Service Name</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="e.g., auth-service" 
-                        {...field} 
-                        data-testid="input-service-name"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="iconColor"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Icon Color</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger data-testid="select-icon-color">
-                          <SelectValue placeholder="Select color" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {colorOptions.map((color) => (
-                          <SelectItem key={color.value} value={color.value}>
-                            {color.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Name</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="e.g., auth-service" 
+                      {...field} 
+                      data-testid="input-service-name"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -198,51 +166,6 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="icon"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Icon</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger data-testid="select-icon">
-                        <SelectValue placeholder="Select icon" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {iconOptions.map((icon) => (
-                        <SelectItem key={icon.value} value={icon.value}>
-                          <div className="flex items-center space-x-2">
-                            <i className={`${icon.value} w-4 h-4`}></i>
-                            <span>{icon.label}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="availableVersions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Available Versions</FormLabel>
-                  <FormControl>
-                    <Input 
-                      placeholder="e.g., 1.0.0, 1.1.0, 1.2.0 (comma separated)"
-                      {...field}
-                      data-testid="input-available-versions"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <div className="grid grid-cols-3 gap-4">
               <FormField
