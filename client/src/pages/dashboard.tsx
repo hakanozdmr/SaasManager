@@ -8,7 +8,6 @@ import { AddServiceModal } from "@/components/add-service-modal";
 import { useState } from "react";
 
 export default function Dashboard() {
-  const [selectedEnvironment, setSelectedEnvironment] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [isVersionModalOpen, setIsVersionModalOpen] = useState(false);
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
@@ -36,15 +35,12 @@ export default function Dashboard() {
         <StatsCards />
         
         <FilterControls 
-          selectedEnvironment={selectedEnvironment}
-          onEnvironmentChange={setSelectedEnvironment}
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           onAddServiceClick={handleAddServiceClick}
         />
         
         <ServicesTable 
-          selectedEnvironment={selectedEnvironment}
           searchTerm={searchTerm}
           onVersionChangeRequest={handleVersionChangeRequest}
         />

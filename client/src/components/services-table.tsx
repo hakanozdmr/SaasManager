@@ -10,12 +10,11 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 interface ServicesTableProps {
-  selectedEnvironment: string;
   searchTerm: string;
   onVersionChangeRequest: (serviceName: string, environment: string, fromVersion: string, toVersion: string) => void;
 }
 
-export function ServicesTable({ selectedEnvironment, searchTerm, onVersionChangeRequest }: ServicesTableProps) {
+export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTableProps) {
   const { data: services = [], isLoading } = useQuery<Service[]>({
     queryKey: ["/api/services"],
   });
