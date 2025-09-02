@@ -153,6 +153,8 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const service: Service = {
       ...insertService,
+      icon: insertService.icon || "fas fa-cube",
+      iconColor: insertService.iconColor || "blue",
       id,
       lastUpdated: new Date()
     };
@@ -178,7 +180,8 @@ export class MemStorage implements IStorage {
     }
     
     // Remove duplicates and filter out empty values
-    const newAvailableVersions = [...new Set(updatedVersions.filter(v => v && v.trim().length > 0))];
+    const versionSet = new Set(updatedVersions.filter(v => v && v.trim().length > 0));
+    const newAvailableVersions = Array.from(versionSet);
     
     // Update the version
     const updatedService: Service = {
@@ -212,6 +215,7 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const activity: Activity = {
       ...insertActivity,
+      user: insertActivity.user || "Admin",
       id,
       timestamp: new Date()
     };

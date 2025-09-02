@@ -172,6 +172,8 @@ export class MongoStorage implements IStorage {
     const id = new Date().getTime().toString();
     const service: Service = {
       ...insertService,
+      icon: insertService.icon || "fas fa-cube",
+      iconColor: insertService.iconColor || "blue",
       id,
       lastUpdated: new Date()
     };
@@ -197,7 +199,8 @@ export class MongoStorage implements IStorage {
     }
     
     // Remove duplicates and filter out empty values
-    const newAvailableVersions = [...new Set(updatedVersions.filter(v => v && v.trim().length > 0))];
+    const versionSet = new Set(updatedVersions.filter(v => v && v.trim().length > 0));
+    const newAvailableVersions = Array.from(versionSet);
     
     // Update the service
     const updatedService: Service = {
@@ -233,6 +236,7 @@ export class MongoStorage implements IStorage {
     const id = new Date().getTime().toString();
     const activity: Activity = {
       ...insertActivity,
+      user: insertActivity.user || "Admin",
       id,
       timestamp: new Date()
     };
