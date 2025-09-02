@@ -10,9 +10,18 @@ export class MongoStorage implements IStorage {
   private activitiesCollection: Collection<Activity>;
 
   constructor() {
-    const uri = process.env.MONGODB_URI;
+    let uri = process.env.MONGODB_URI;
     if (!uri) {
       throw new Error('MONGODB_URI environment variable is required');
+    }
+    
+    // Replace <db_password> with actual password if it exists
+    const password = process.env.MONGODB_PASSWORD;
+    if (password && uri.includes('<db_password>')) {
+      uri = uri.replace('<db_password>', encodeURIComponent(password));
+      console.log('MongoDB Atlas connection string configured');
+    } else {
+      console.log('MongoDB URI does not contain <db_password> placeholder or password not provided');
     }
     
     this.client = new MongoClient(uri);

@@ -1,4 +1,5 @@
 import { type User, type InsertUser, type Service, type InsertService, type Activity, type InsertActivity, type UpdateServiceVersion } from "@shared/schema";
+import { randomUUID } from "crypto";
 import { MongoStorage } from "./mongodb-storage";
 
 export interface IStorage {
