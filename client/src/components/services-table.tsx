@@ -29,7 +29,7 @@ export function ServicesTable({ selectedEnvironment, searchTerm, onVersionChange
       const response = await apiRequest("PATCH", "/api/services/version", data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["/api/services"] });
       queryClient.invalidateQueries({ queryKey: ["/api/activities"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
@@ -37,7 +37,12 @@ export function ServicesTable({ selectedEnvironment, searchTerm, onVersionChange
         title: "Success!",
         description: "Version updated successfully!",
       });
-      setPendingChanges({});
+      // Clear pending changes only for the updated service
+      setPendingChanges(prev => {
+        const newPendingChanges = { ...prev };
+        delete newPendingChanges[variables.serviceName];
+        return newPendingChanges;
+      });
     },
     onError: () => {
       toast({
@@ -64,20 +69,30 @@ export function ServicesTable({ selectedEnvironment, searchTerm, onVersionChange
     }));
   };
 
-  const handleSaveVersions = (serviceName: string) => {
+  const handleSaveVersions = async (serviceName: string) => {
     const serviceChanges = pendingChanges[serviceName];
     if (!serviceChanges) return;
 
     const service = services.find(s => s.name === serviceName);
     if (!service) return;
 
-    // Process each environment change
-    Object.entries(serviceChanges).forEach(([environment, newVersion]) => {
+    // Process each environment change sequentially
+    for (const [environment, newVersion] of Object.entries(serviceChanges)) {
       const currentVersion = service[`${environment}Version` as keyof Service] as string;
       if (currentVersion !== newVersion) {
-        onVersionChangeRequest(serviceName, environment, currentVersion, newVersion);
+        try {
+          await updateVersionMutation.mutateAsync({
+            serviceName,
+            environment,
+            version: newVersion,
+            user: "Admin"
+          });
+        } catch (error) {
+          console.error('Failed to update version:', error);
+          break; // Stop processing if one update fails
+        }
       }
-    });
+    }
   };
 
   const getEnvironmentColor = (env: string) => {
