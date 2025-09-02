@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { Save } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -54,7 +54,7 @@ export function ServicesTable({ selectedEnvironment, searchTerm, onVersionChange
     return matchesSearch;
   });
 
-  const handleVersionSelect = (serviceName: string, environment: string, version: string) => {
+  const handleVersionChange = (serviceName: string, environment: string, version: string) => {
     setPendingChanges(prev => ({
       ...prev,
       [serviceName]: {
@@ -166,22 +166,14 @@ export function ServicesTable({ selectedEnvironment, searchTerm, onVersionChange
                           >
                             v{service[`${env}Version` as keyof Service] as string}
                           </Badge>
-                          <Select
+                          <Input
+                            type="text"
+                            placeholder="Enter version"
                             value={pendingChanges[service.name]?.[env] || service[`${env}Version` as keyof Service] as string}
-                            onValueChange={(value) => handleVersionSelect(service.name, env, value)}
-                            data-testid={`select-${service.name}-${env}`}
-                          >
-                            <SelectTrigger className="w-full text-sm">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {service.availableVersions.map((version) => (
-                                <SelectItem key={version} value={version}>
-                                  v{version}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            onChange={(e) => handleVersionChange(service.name, env, e.target.value)}
+                            className="w-full text-sm"
+                            data-testid={`input-${service.name}-${env}`}
+                          />
                         </div>
                       </td>
                     ))}

@@ -167,10 +167,23 @@ export class MemStorage implements IStorage {
 
     const oldVersion = service[`${update.environment}Version` as keyof Service] as string;
     
+    // Update available versions to include the new version if not already present
+    const currentVersions = [service.bauVersion, service.uatVersion, service.prodVersion];
+    const updatedVersions = [...currentVersions];
+    
+    // Add the new version if it's not already in the list
+    if (!service.availableVersions.includes(update.version)) {
+      updatedVersions.push(update.version);
+    }
+    
+    // Remove duplicates and filter out empty values
+    const newAvailableVersions = [...new Set(updatedVersions.filter(v => v && v.trim().length > 0))];
+    
     // Update the version
     const updatedService: Service = {
       ...service,
       [`${update.environment}Version`]: update.version,
+      availableVersions: newAvailableVersions,
       lastUpdated: new Date()
     };
     
