@@ -1,5 +1,5 @@
 import { type User, type InsertUser, type Service, type InsertService, type Activity, type InsertActivity, type UpdateServiceVersion } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { MongoStorage } from "./mongodb-storage";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -248,4 +248,47 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Initialize storage - try MongoDB, fallback to in-memory
+let storage: IStorage | null = null;
+let storagePromise: Promise<IStorage>;
+
+async function initializeStorage(): Promise<IStorage> {
+  if (process.env.MONGODB_URI) {
+    try {
+      const mongoStorage = new MongoStorage();
+      await mongoStorage.connect();
+      console.log('Using MongoDB storage');
+      return mongoStorage;
+    } catch (error) {
+      console.error('MongoDB connection failed, falling back to in-memory storage:', error);
+    }
+  }
+  
+  console.log('Using in-memory storage');
+  const memStorage = new MemStorage();
+  return memStorage;
+}
+
+// Initialize storage on startup
+storagePromise = initializeStorage().then(storageInstance => {
+  storage = storageInstance;
+  return storageInstance;
+}).catch(error => {
+  console.error('Failed to initialize storage:', error);
+  const fallbackStorage = new MemStorage();
+  storage = fallbackStorage;
+  return fallbackStorage;
+});
+
+// Export a function that waits for storage to be ready
+export async function getStorage(): Promise<IStorage> {
+  if (storage) {
+    return storage;
+  }
+  return await storagePromise;
+}
+
+// Export storage for backwards compatibility, but it might be null initially
+export { storage };
+
+// MemStorage class is exported above for development/testing purposes
