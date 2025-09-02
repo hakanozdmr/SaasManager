@@ -4,12 +4,14 @@ import { FilterControls } from "@/components/filter-controls";
 import { ServicesTable } from "@/components/services-table";
 import { RecentActivity } from "@/components/recent-activity";
 import { VersionChangeModal } from "@/components/version-change-modal";
+import { AddServiceModal } from "@/components/add-service-modal";
 import { useState } from "react";
 
 export default function Dashboard() {
   const [selectedEnvironment, setSelectedEnvironment] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isVersionModalOpen, setIsVersionModalOpen] = useState(false);
+  const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
   const [pendingVersionChange, setPendingVersionChange] = useState<{
     serviceName: string;
     environment: string;
@@ -19,7 +21,11 @@ export default function Dashboard() {
 
   const handleVersionChangeRequest = (serviceName: string, environment: string, fromVersion: string, toVersion: string) => {
     setPendingVersionChange({ serviceName, environment, fromVersion, toVersion });
-    setIsModalOpen(true);
+    setIsVersionModalOpen(true);
+  };
+
+  const handleAddServiceClick = () => {
+    setIsAddServiceModalOpen(true);
   };
 
   return (
@@ -34,6 +40,7 @@ export default function Dashboard() {
           onEnvironmentChange={setSelectedEnvironment}
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
+          onAddServiceClick={handleAddServiceClick}
         />
         
         <ServicesTable 
@@ -46,13 +53,18 @@ export default function Dashboard() {
       </main>
 
       <VersionChangeModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isVersionModalOpen}
+        onClose={() => setIsVersionModalOpen(false)}
         pendingChange={pendingVersionChange}
         onConfirm={() => {
-          setIsModalOpen(false);
+          setIsVersionModalOpen(false);
           setPendingVersionChange(null);
         }}
+      />
+
+      <AddServiceModal
+        isOpen={isAddServiceModalOpen}
+        onClose={() => setIsAddServiceModalOpen(false)}
       />
     </div>
   );

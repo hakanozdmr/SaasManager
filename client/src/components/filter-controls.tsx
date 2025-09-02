@@ -9,13 +9,15 @@ interface FilterControlsProps {
   onEnvironmentChange: (environment: string) => void;
   searchTerm: string;
   onSearchChange: (search: string) => void;
+  onAddServiceClick: () => void;
 }
 
 export function FilterControls({ 
   selectedEnvironment, 
   onEnvironmentChange, 
   searchTerm, 
-  onSearchChange 
+  onSearchChange,
+  onAddServiceClick
 }: FilterControlsProps) {
   const environments = [
     { value: "all", label: "All Environments" },
@@ -62,7 +64,7 @@ export function FilterControls({
                 data-testid="input-search"
               />
             </div>
-            <Button data-testid="button-add-service">
+            <Button onClick={onAddServiceClick} data-testid="button-add-service">
               <Plus className="w-4 h-4 mr-2" />
               Add Service
             </Button>
