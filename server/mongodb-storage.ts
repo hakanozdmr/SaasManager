@@ -66,6 +66,15 @@ export class MongoStorage implements IStorage {
   }
 
   private async initializeSampleData(): Promise<void> {
+    const userCount = await this.usersCollection.countDocuments();
+    if (userCount === 0) {
+      await this.createUser({
+        username: "admin",
+        password: "",
+        role: "admin"
+      });
+    }
+
     const serviceCount = await this.servicesCollection.countDocuments();
 
     if (serviceCount === 0) {

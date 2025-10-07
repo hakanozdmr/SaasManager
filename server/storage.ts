@@ -42,6 +42,13 @@ export class MemStorage implements IStorage {
   }
 
   private async initializeSampleData() {
+    // Create admin user
+    await this.createUser({
+      username: "admin",
+      password: "",
+      role: "admin"
+    });
+
     // Create sample services
     const sampleServices: InsertService[] = [
       {
