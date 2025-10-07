@@ -149,6 +149,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update service
+  app.put("/api/services/:id", requireAuth, async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const validatedData = insertServiceSchema.partial().parse(req.body);
+      const service = await storage.updateService(req.params.id, validatedData);
+      res.json(service);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid service data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update service" });
+    }
+  });
+
+  // Delete service
+  app.delete("/api/services/:id", requireAuth, async (req, res) => {
+    try {
+      const storage = await getStorage();
+      await storage.deleteService(req.params.id);
+      res.json({ message: "Service deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete service" });
+    }
+  });
+
   // Update service version
   app.patch("/api/services/version", requireAuth, async (req, res) => {
     try {
