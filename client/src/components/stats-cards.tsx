@@ -3,7 +3,12 @@ import { Box } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 export function StatsCards() {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading } = useQuery<{
+    totalServices: number;
+    prodReadyServices: number;
+    uatServices: number;
+    pendingUpdates: number;
+  }>({
     queryKey: ["/api/stats"],
   });
 

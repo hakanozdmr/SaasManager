@@ -67,8 +67,8 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
     defaultValues: {
       name: "",
       description: "",
-      bauVersion: "",
-      uatVersion: "",
+      bauVersion: "0.1.0",
+      uatVersion: "0.1.0",
       prodVersion: "0.1.0",
     },
   });
