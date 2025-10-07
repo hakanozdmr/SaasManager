@@ -5,10 +5,16 @@ import { ServicesTable } from "@/components/services-table";
 import { RecentActivity } from "@/components/recent-activity";
 import { VersionChangeModal } from "@/components/version-change-modal";
 import { AddServiceModal } from "@/components/add-service-modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Dashboard() {
+  const { isLoading, requireAuth } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  useEffect(() => {
+    requireAuth();
+  }, [isLoading]);
   const [isVersionModalOpen, setIsVersionModalOpen] = useState(false);
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
   const [pendingVersionChange, setPendingVersionChange] = useState<{
@@ -26,6 +32,10 @@ export default function Dashboard() {
   const handleAddServiceClick = () => {
     setIsAddServiceModalOpen(true);
   };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   return (
     <div className="bg-background min-h-screen">
