@@ -18,10 +18,12 @@ export const services = pgTable("services", {
 
 export const activities = pgTable("activities", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  action: text("action").notNull().default("version_change"),
   serviceName: text("service_name").notNull(),
-  environment: text("environment").notNull(),
-  fromVersion: text("from_version").notNull(),
-  toVersion: text("to_version").notNull(),
+  environment: text("environment"),
+  fromVersion: text("from_version"),
+  toVersion: text("to_version"),
+  details: text("details"),
   user: text("user").notNull(),
   timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
@@ -29,6 +31,12 @@ export const activities = pgTable("activities", {
 export const insertServiceSchema = createInsertSchema(services).omit({
   id: true,
   lastUpdated: true,
+}).extend({
+  name: z.string().min(1, "Service name is required"),
+  availableVersions: z.array(z.string()).optional().default(["0.1.0"]),
+  bauVersion: z.string().optional().default("0.1.0"),
+  uatVersion: z.string().optional().default("0.1.0"),
+  prodVersion: z.string().optional().default("0.1.0"),
 });
 
 export const insertActivitySchema = createInsertSchema(activities).omit({
