@@ -31,6 +31,7 @@ export function DeleteServiceDialog({ isOpen, onClose, service }: DeleteServiceD
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/services"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/activities"] });
       toast({
         title: "Success",
         description: "Service deleted successfully",
