@@ -2,12 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save } from "lucide-react";
+import { Save, Pencil, Trash2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Service } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { EditServiceModal } from "./edit-service-modal";
+import { DeleteServiceDialog } from "./delete-service-dialog";
 
 interface ServicesTableProps {
   searchTerm: string;
@@ -20,6 +22,8 @@ export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTa
   });
   
   const [pendingChanges, setPendingChanges] = useState<Record<string, Record<string, string>>>({});
+  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [deletingService, setDeletingService] = useState<Service | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -197,17 +201,37 @@ export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTa
                     </td>
                     
                     <td className="py-4 px-6">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleSaveVersions(service.name)}
-                        disabled={!hasChanges || updateVersionMutation.isPending}
-                        className="text-primary hover:text-primary/80"
-                        data-testid={`button-save-${service.name}`}
-                      >
-                        <Save className="w-4 h-4 mr-1" />
-                        Save
-                      </Button>
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSaveVersions(service.name)}
+                          disabled={!hasChanges || updateVersionMutation.isPending}
+                          className="text-primary hover:text-primary/80"
+                          data-testid={`button-save-${service.name}`}
+                        >
+                          <Save className="w-4 h-4 mr-1" />
+                          Save
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditingService(service)}
+                          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                          data-testid={`button-edit-${service.name}`}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setDeletingService(service)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          data-testid={`button-delete-${service.name}`}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -216,6 +240,22 @@ export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTa
           </table>
         </div>
       </CardContent>
+
+      {editingService && (
+        <EditServiceModal
+          isOpen={!!editingService}
+          onClose={() => setEditingService(null)}
+          service={editingService}
+        />
+      )}
+
+      {deletingService && (
+        <DeleteServiceDialog
+          isOpen={!!deletingService}
+          onClose={() => setDeletingService(null)}
+          service={deletingService}
+        />
+      )}
     </Card>
   );
 }
