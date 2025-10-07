@@ -69,7 +69,7 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
       description: "",
       bauVersion: "",
       uatVersion: "",
-      prodVersion: "",
+      prodVersion: "0.1.0",
     },
   });
 
@@ -212,7 +212,7 @@ export function AddServiceModal({ isOpen, onClose }: AddServiceModalProps) {
                     <FormLabel>PROD Version</FormLabel>
                     <FormControl>
                       <Input 
-                        placeholder="1.0.0"
+                        placeholder="0.1.0 (default)"
                         {...field}
                         data-testid="input-prod-version"
                       />
