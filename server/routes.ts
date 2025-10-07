@@ -160,6 +160,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid service data", errors: error.errors });
       }
+      if (error instanceof Error && error.message.includes("not found")) {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(500).json({ message: "Failed to update service" });
     }
   });
@@ -171,6 +174,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.deleteService(req.params.id);
       res.json({ message: "Service deleted successfully" });
     } catch (error) {
+      if (error instanceof Error && error.message.includes("not found")) {
+        return res.status(404).json({ message: error.message });
+      }
       res.status(500).json({ message: "Failed to delete service" });
     }
   });
