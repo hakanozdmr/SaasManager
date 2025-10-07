@@ -52,13 +52,21 @@ export type UpdateServiceVersion = z.infer<typeof updateServiceVersionSchema>;
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password").notNull().default(""),
+  role: text("role").notNull().default("user"),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+}).extend({
+  password: z.string().optional().default(""),
+  role: z.enum(["admin", "user"]).optional().default("user"),
+});
+
+export const loginSchema = z.object({
+  username: z.string().min(1),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
+export type LoginRequest = z.infer<typeof loginSchema>;
