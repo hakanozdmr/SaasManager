@@ -12,6 +12,8 @@ export interface IStorage {
   getService(id: string): Promise<Service | undefined>;
   getServiceByName(name: string): Promise<Service | undefined>;
   createService(service: InsertService): Promise<Service>;
+  updateService(id: string, service: Partial<InsertService>): Promise<Service>;
+  deleteService(id: string): Promise<void>;
   updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service>;
   
   // Activity tracking
@@ -167,6 +169,31 @@ export class MemStorage implements IStorage {
     };
     this.services.set(id, service);
     return service;
+  }
+
+  async updateService(id: string, updates: Partial<InsertService>): Promise<Service> {
+    const service = await this.getService(id);
+    if (!service) {
+      throw new Error(`Service ${id} not found`);
+    }
+
+    const updatedService: Service = {
+      ...service,
+      ...updates,
+      id,
+      lastUpdated: new Date()
+    };
+    
+    this.services.set(id, updatedService);
+    return updatedService;
+  }
+
+  async deleteService(id: string): Promise<void> {
+    const service = await this.getService(id);
+    if (!service) {
+      throw new Error(`Service ${id} not found`);
+    }
+    this.services.delete(id);
   }
 
   async updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service> {

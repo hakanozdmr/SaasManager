@@ -203,6 +203,31 @@ export class MongoStorage implements IStorage {
     return service;
   }
 
+  async updateService(id: string, updates: Partial<InsertService>): Promise<Service> {
+    const service = await this.getService(id);
+    if (!service) {
+      throw new Error(`Service ${id} not found`);
+    }
+
+    const updatedService: Service = {
+      ...service,
+      ...updates,
+      id,
+      lastUpdated: new Date(),
+    };
+
+    await this.servicesCollection.replaceOne({ id }, updatedService);
+    return updatedService;
+  }
+
+  async deleteService(id: string): Promise<void> {
+    const service = await this.getService(id);
+    if (!service) {
+      throw new Error(`Service ${id} not found`);
+    }
+    await this.servicesCollection.deleteOne({ id });
+  }
+
   async updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service> {
     const service = await this.getServiceByName(update.serviceName);
     if (!service) {
