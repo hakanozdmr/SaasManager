@@ -11,6 +11,9 @@ import { useAuth } from "@/hooks/use-auth";
 export default function Dashboard() {
   const { isLoading, requireAuth } = useAuth();
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [isPaginated, setIsPaginated] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
 
   useEffect(() => {
     requireAuth();
@@ -33,6 +36,16 @@ export default function Dashboard() {
     setIsAddServiceModalOpen(true);
   };
 
+  const handlePaginationToggle = (paginated: boolean) => {
+    setIsPaginated(paginated);
+    setCurrentPage(1);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setCurrentPage(1);
+  };
+
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
@@ -48,11 +61,19 @@ export default function Dashboard() {
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           onAddServiceClick={handleAddServiceClick}
+          isPaginated={isPaginated}
+          onPaginationToggle={handlePaginationToggle}
+          pageSize={pageSize}
+          onPageSizeChange={handlePageSizeChange}
         />
         
         <ServicesTable 
           searchTerm={searchTerm}
           onVersionChangeRequest={handleVersionChangeRequest}
+          isPaginated={isPaginated}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
         />
         
         <RecentActivity />

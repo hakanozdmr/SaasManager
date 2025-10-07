@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, Pencil, Trash2 } from "lucide-react";
+import { Save, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Service } from "@shared/schema";
@@ -14,9 +14,20 @@ import { DeleteServiceDialog } from "./delete-service-dialog";
 interface ServicesTableProps {
   searchTerm: string;
   onVersionChangeRequest: (serviceName: string, environment: string, fromVersion: string, toVersion: string) => void;
+  isPaginated: boolean;
+  currentPage: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
 }
 
-export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTableProps) {
+export function ServicesTable({ 
+  searchTerm, 
+  onVersionChangeRequest,
+  isPaginated,
+  currentPage,
+  pageSize,
+  onPageChange
+}: ServicesTableProps) {
   const { data: services = [], isLoading } = useQuery<Service[]>({
     queryKey: ["/api/services"],
   });
@@ -40,7 +51,6 @@ export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTa
         title: "Success!",
         description: "Version updated successfully!",
       });
-      // Clear pending changes only for the updated service
       setPendingChanges(prev => {
         const newPendingChanges = { ...prev };
         delete newPendingChanges[variables.serviceName];
@@ -61,6 +71,46 @@ export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTa
                          service.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
+
+  const totalPages = isPaginated ? Math.ceil(filteredServices.length / pageSize) : 1;
+  const startIndex = isPaginated ? (currentPage - 1) * pageSize : 0;
+  const endIndex = isPaginated ? startIndex + pageSize : filteredServices.length;
+  const displayedServices = filteredServices.slice(startIndex, endIndex);
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxPagesToShow = 5;
+
+    if (totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        pages.push(currentPage - 1);
+        pages.push(currentPage);
+        pages.push(currentPage + 1);
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+
+    return pages;
+  };
 
   const handleVersionChange = (serviceName: string, environment: string, version: string) => {
     setPendingChanges(prev => ({
@@ -156,7 +206,7 @@ export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTa
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredServices.map((service) => {
+              {displayedServices.map((service) => {
                 const hasChanges = pendingChanges[service.name];
                 
                 return (
@@ -239,6 +289,59 @@ export function ServicesTable({ searchTerm, onVersionChangeRequest }: ServicesTa
             </tbody>
           </table>
         </div>
+
+        {isPaginated && totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-border">
+            <div className="text-sm text-muted-foreground">
+              Showing {startIndex + 1} to {Math.min(endIndex, filteredServices.length)} of {filteredServices.length} services
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                data-testid="button-prev-page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Previous
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {getPageNumbers().map((page, index) => (
+                  page === '...' ? (
+                    <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground">
+                      ...
+                    </span>
+                  ) : (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => onPageChange(page as number)}
+                      className="w-10"
+                      data-testid={`button-page-${page}`}
+                    >
+                      {page}
+                    </Button>
+                  )
+                ))}
+              </div>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                data-testid="button-next-page"
+              >
+                Next
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
 
       {editingService && (
