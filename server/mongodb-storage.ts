@@ -6,7 +6,7 @@ import {
   type InsertService,
   type Activity,
   type InsertActivity,
-  type UpdateServiceVersion,
+  type UpdateServiceVersionWithUser,
 } from "@shared/schema";
 import { IStorage } from "./storage";
 
@@ -203,7 +203,7 @@ export class MongoStorage implements IStorage {
     return service;
   }
 
-  async updateServiceVersion(update: UpdateServiceVersion): Promise<Service> {
+  async updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service> {
     const service = await this.getServiceByName(update.serviceName);
     if (!service) {
       throw new Error(`Service ${update.serviceName} not found`);

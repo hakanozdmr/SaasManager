@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Service, type InsertService, type Activity, type InsertActivity, type UpdateServiceVersion } from "@shared/schema";
+import { type User, type InsertUser, type Service, type InsertService, type Activity, type InsertActivity, type UpdateServiceVersionWithUser } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { MongoStorage } from "./mongodb-storage";
 
@@ -12,7 +12,7 @@ export interface IStorage {
   getService(id: string): Promise<Service | undefined>;
   getServiceByName(name: string): Promise<Service | undefined>;
   createService(service: InsertService): Promise<Service>;
-  updateServiceVersion(update: UpdateServiceVersion): Promise<Service>;
+  updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service>;
   
   // Activity tracking
   getAllActivities(): Promise<Activity[]>;
@@ -169,7 +169,7 @@ export class MemStorage implements IStorage {
     return service;
   }
 
-  async updateServiceVersion(update: UpdateServiceVersion): Promise<Service> {
+  async updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service> {
     const service = await this.getServiceByName(update.serviceName);
     if (!service) {
       throw new Error(`Service ${update.serviceName} not found`);

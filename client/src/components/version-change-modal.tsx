@@ -29,7 +29,7 @@ export function VersionChangeModal({ isOpen, onClose, pendingChange, onConfirm }
   const { toast } = useToast();
 
   const updateVersionMutation = useMutation({
-    mutationFn: async (data: { serviceName: string; environment: string; version: string; user: string }) => {
+    mutationFn: async (data: { serviceName: string; environment: string; version: string }) => {
       const response = await apiRequest("PATCH", "/api/services/version", data);
       return response.json();
     },
@@ -60,7 +60,6 @@ export function VersionChangeModal({ isOpen, onClose, pendingChange, onConfirm }
       serviceName: pendingChange.serviceName,
       environment: pendingChange.environment,
       version: pendingChange.toVersion,
-      user: "Admin"
     });
   };
 

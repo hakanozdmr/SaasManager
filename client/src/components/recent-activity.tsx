@@ -73,7 +73,7 @@ export function RecentActivity() {
                   {getActivityIcon(activity.environment)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-foreground">
+                  <div className="text-sm text-foreground">
                     <span className="font-medium" data-testid={`text-activity-user-${activity.id}`}>
                       {activity.user}
                     </span> updated{" "}
@@ -87,7 +87,7 @@ export function RecentActivity() {
                     >
                       {activity.environment.toUpperCase()}
                     </Badge>
-                  </p>
+                  </div>
                   <p className="text-xs text-muted-foreground mt-1" data-testid={`text-activity-time-${activity.id}`}>
                     {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
                   </p>

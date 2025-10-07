@@ -22,7 +22,7 @@ export const activities = pgTable("activities", {
   environment: text("environment").notNull(),
   fromVersion: text("from_version").notNull(),
   toVersion: text("to_version").notNull(),
-  user: text("user").notNull().default("Admin"),
+  user: text("user").notNull(),
   timestamp: timestamp("timestamp").notNull().defaultNow(),
 });
 
@@ -40,7 +40,6 @@ export const updateServiceVersionSchema = z.object({
   serviceName: z.string(),
   environment: z.enum(["bau", "uat", "prod"]),
   version: z.string(),
-  user: z.string().default("Admin"),
 });
 
 export type Service = typeof services.$inferSelect;
@@ -48,6 +47,7 @@ export type InsertService = z.infer<typeof insertServiceSchema>;
 export type Activity = typeof activities.$inferSelect;
 export type InsertActivity = z.infer<typeof insertActivitySchema>;
 export type UpdateServiceVersion = z.infer<typeof updateServiceVersionSchema>;
+export type UpdateServiceVersionWithUser = UpdateServiceVersion & { user: string };
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

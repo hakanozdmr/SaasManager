@@ -154,7 +154,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const storage = await getStorage();
       const validatedData = updateServiceVersionSchema.parse(req.body);
-      const service = await storage.updateServiceVersion(validatedData);
+      const username = req.session.user?.username || "Unknown";
+      const service = await storage.updateServiceVersion({
+        ...validatedData,
+        user: username,
+      });
       res.json(service);
     } catch (error) {
       if (error instanceof z.ZodError) {
