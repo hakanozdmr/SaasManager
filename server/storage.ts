@@ -12,8 +12,9 @@ export interface IStorage {
   getService(id: string): Promise<Service | undefined>;
   getServiceByName(name: string): Promise<Service | undefined>;
   createService(service: InsertService): Promise<Service>;
-  updateService(id: string, service: Partial<InsertService>): Promise<Service>;
-  deleteService(id: string): Promise<void>;
+  updateService(id: string, service: Partial<InsertService>, username: string): Promise<Service>;
+  deleteService(id: string, username: string): Promise<void>;
+  createServiceWithActivity(service: InsertService, username: string): Promise<Service>;
   updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service>;
   
   // Activity tracking
@@ -171,7 +172,21 @@ export class MemStorage implements IStorage {
     return service;
   }
 
-  async updateService(id: string, updates: Partial<InsertService>): Promise<Service> {
+  async createServiceWithActivity(insertService: InsertService, username: string): Promise<Service> {
+    const service = await this.createService(insertService);
+    
+    // Create activity for service creation
+    await this.createActivity({
+      action: "created",
+      serviceName: service.name,
+      details: "Service created",
+      user: username,
+    });
+
+    return service;
+  }
+
+  async updateService(id: string, updates: Partial<InsertService>, username: string): Promise<Service> {
     const service = await this.getService(id);
     if (!service) {
       throw new Error(`Service ${id} not found`);
@@ -185,14 +200,32 @@ export class MemStorage implements IStorage {
     };
     
     this.services.set(id, updatedService);
+
+    // Create activity for service update
+    await this.createActivity({
+      action: "updated",
+      serviceName: updatedService.name,
+      details: "Service information updated",
+      user: username,
+    });
+
     return updatedService;
   }
 
-  async deleteService(id: string): Promise<void> {
+  async deleteService(id: string, username: string): Promise<void> {
     const service = await this.getService(id);
     if (!service) {
       throw new Error(`Service ${id} not found`);
     }
+
+    // Create activity before deleting
+    await this.createActivity({
+      action: "deleted",
+      serviceName: service.name,
+      details: "Service deleted",
+      user: username,
+    });
+
     this.services.delete(id);
   }
 
@@ -229,6 +262,7 @@ export class MemStorage implements IStorage {
 
     // Create activity record
     await this.createActivity({
+      action: "version_change",
       serviceName: update.serviceName,
       environment: update.environment,
       fromVersion: oldVersion,
@@ -248,8 +282,13 @@ export class MemStorage implements IStorage {
   async createActivity(insertActivity: InsertActivity): Promise<Activity> {
     const id = randomUUID();
     const activity: Activity = {
-      ...insertActivity,
-      user: insertActivity.user || "Admin",
+      action: insertActivity.action || "version_change",
+      serviceName: insertActivity.serviceName,
+      environment: insertActivity.environment || null,
+      fromVersion: insertActivity.fromVersion || null,
+      toVersion: insertActivity.toVersion || null,
+      details: insertActivity.details || null,
+      user: insertActivity.user,
       id,
       timestamp: new Date()
     };

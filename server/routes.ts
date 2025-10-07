@@ -139,7 +139,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const storage = await getStorage();
       const validatedData = insertServiceSchema.parse(req.body);
-      const service = await storage.createService(validatedData);
+      const username = req.session.user?.username || "Unknown";
+      const service = await storage.createServiceWithActivity(validatedData, username);
       res.status(201).json(service);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -154,7 +155,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const storage = await getStorage();
       const validatedData = insertServiceSchema.partial().parse(req.body);
-      const service = await storage.updateService(req.params.id, validatedData);
+      const username = req.session.user?.username || "Unknown";
+      const service = await storage.updateService(req.params.id, validatedData, username);
       res.json(service);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -171,7 +173,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/services/:id", requireAuth, async (req, res) => {
     try {
       const storage = await getStorage();
-      await storage.deleteService(req.params.id);
+      const username = req.session.user?.username || "Unknown";
+      await storage.deleteService(req.params.id, username);
       res.json({ message: "Service deleted successfully" });
     } catch (error) {
       if (error instanceof Error && error.message.includes("not found")) {
