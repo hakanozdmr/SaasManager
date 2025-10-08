@@ -67,9 +67,9 @@ export const users = pgTable("users", {
 export const requests = pgTable("requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   requestName: text("request_name").notNull(),
-  bauServices: text("bau_services").notNull(),
+  bauServices: text("bau_services").notNull().default(""),
   bauDeliveryDate: timestamp("bau_delivery_date"),
-  uatServices: text("uat_services").notNull(),
+  uatServices: text("uat_services").notNull().default(""),
   uatDeliveryDate: timestamp("uat_delivery_date"),
   productionDate: timestamp("production_date"),
   jiraEpicLink: text("jira_epic_link"),
@@ -88,19 +88,47 @@ export const loginSchema = z.object({
   username: z.string().min(1),
 });
 
-export const insertRequestSchema = createInsertSchema(requests).omit({
+const baseRequestSchema = createInsertSchema(requests).omit({
   id: true,
   createdAt: true,
 }).extend({
   requestName: z.string().min(1, "Request name is required"),
-  bauServices: z.string().min(1, "BAU services is required"),
-  uatServices: z.string().min(1, "UAT services is required"),
+  bauServices: z.string().optional().default(""),
+  uatServices: z.string().optional().default(""),
   bauDeliveryDate: z.coerce.date().nullable().optional(),
   uatDeliveryDate: z.coerce.date().nullable().optional(),
   productionDate: z.coerce.date().nullable().optional(),
   jiraEpicLink: z.string().nullable().optional(),
   notes: z.string().nullable().optional(),
 });
+
+export const insertRequestSchema = baseRequestSchema.refine(
+  (data) => {
+    const bauEmpty = !data.bauServices || data.bauServices.trim() === "";
+    const uatEmpty = !data.uatServices || data.uatServices.trim() === "";
+    return !(bauEmpty && uatEmpty);
+  },
+  {
+    message: "En az bir servis listesi (BAU veya UAT) dolu olmalıdır",
+    path: ["bauServices"],
+  }
+);
+
+export const requestFormSchema = baseRequestSchema.extend({
+  bauDeliveryDate: z.string().nullable().optional(),
+  uatDeliveryDate: z.string().nullable().optional(),
+  productionDate: z.string().nullable().optional(),
+}).refine(
+  (data) => {
+    const bauEmpty = !data.bauServices || data.bauServices.trim() === "";
+    const uatEmpty = !data.uatServices || data.uatServices.trim() === "";
+    return !(bauEmpty && uatEmpty);
+  },
+  {
+    message: "En az bir servis listesi (BAU veya UAT) dolu olmalıdır",
+    path: ["bauServices"],
+  }
+);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;

@@ -38,7 +38,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertRequestSchema } from "@shared/schema";
+import { requestFormSchema } from "@shared/schema";
 import { z } from "zod";
 import {
   Form,
@@ -48,12 +48,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-const requestFormSchema = insertRequestSchema.extend({
-  bauDeliveryDate: z.string().nullable().optional(),
-  uatDeliveryDate: z.string().nullable().optional(),
-  productionDate: z.string().nullable().optional(),
-});
 
 type RequestFormData = z.infer<typeof requestFormSchema>;
 
