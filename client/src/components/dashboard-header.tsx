@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { RefreshCw, User, Group, LogOut, Users } from "lucide-react";
+import { RefreshCw, User, Group, LogOut, Users, FileText } from "lucide-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
@@ -49,6 +49,16 @@ export function DashboardHeader() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <Link href="/requests">
+              <Button 
+                variant="outline" 
+                size="sm"
+                data-testid="button-requests"
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                Requests
+              </Button>
+            </Link>
             {isAdmin && (
               <Link href="/users">
                 <Button 
