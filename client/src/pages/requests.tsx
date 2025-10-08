@@ -258,12 +258,13 @@ export default function Requests() {
     <div className="bg-background min-h-screen">
       <DashboardHeader />
       
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Requests</h1>
+      <main className="max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold">Requests</h1>
           <Button 
             onClick={() => setIsAddDialogOpen(true)}
             data-testid="button-add-request"
+            className="w-full sm:w-auto"
           >
             <Plus className="h-4 w-4 mr-2" />
             New Request
@@ -273,138 +274,166 @@ export default function Requests() {
         {requestsLoading ? (
           <div className="flex items-center justify-center p-12">Loading requests...</div>
         ) : (
-          <div className="rounded-md border">
-            <Table>
+          <div className="rounded-md border overflow-x-auto">
+            <Table className="min-w-[1200px]">
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-36">
+                  <TableHead className="w-24 sm:w-36">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('id')}
-                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-request-id"
                     >
-                      Request ID
+                      <span className="hidden sm:inline">Request ID</span>
+                      <span className="sm:hidden">ID</span>
                       <SortIcon column="id" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-52">
+                  <TableHead className="w-36 sm:w-52">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('requestName')}
-                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-request-name"
                     >
-                      Request Name
+                      <span className="hidden sm:inline">Request Name</span>
+                      <span className="sm:hidden">Name</span>
                       <SortIcon column="requestName" />
                     </Button>
                   </TableHead>
-                  <TableHead className="min-w-[320px]">BAU Services</TableHead>
-                  <TableHead className="w-48">
+                  <TableHead className="min-w-[200px] sm:min-w-[320px]">
+                    <span className="text-xs sm:text-sm font-semibold">
+                      <span className="hidden sm:inline">BAU Services</span>
+                      <span className="sm:hidden">BAU Svcs</span>
+                    </span>
+                  </TableHead>
+                  <TableHead className="w-32 sm:w-48">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('bauDeliveryDate')}
-                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-bau-delivery-date"
                     >
-                      BAU Delivery Date
+                      <span className="hidden sm:inline">BAU Delivery Date</span>
+                      <span className="sm:hidden">BAU Date</span>
                       <SortIcon column="bauDeliveryDate" />
                     </Button>
                   </TableHead>
-                  <TableHead className="min-w-[320px]">UAT Services</TableHead>
-                  <TableHead className="w-48">
+                  <TableHead className="min-w-[200px] sm:min-w-[320px]">
+                    <span className="text-xs sm:text-sm font-semibold">
+                      <span className="hidden sm:inline">UAT Services</span>
+                      <span className="sm:hidden">UAT Svcs</span>
+                    </span>
+                  </TableHead>
+                  <TableHead className="w-32 sm:w-48">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('uatDeliveryDate')}
-                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-uat-delivery-date"
                     >
-                      UAT Delivery Date
+                      <span className="hidden sm:inline">UAT Delivery Date</span>
+                      <span className="sm:hidden">UAT Date</span>
                       <SortIcon column="uatDeliveryDate" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-48">
+                  <TableHead className="w-32 sm:w-48">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('productionDate')}
-                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-production-date"
                     >
-                      Production Date
+                      <span className="hidden sm:inline">Production Date</span>
+                      <span className="sm:hidden">Prod Date</span>
                       <SortIcon column="productionDate" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-36">Jira Epic Link</TableHead>
-                  <TableHead className="w-52">Notes</TableHead>
-                  <TableHead className="text-right w-36">Actions</TableHead>
+                  <TableHead className="w-28 sm:w-36">
+                    <span className="text-xs sm:text-sm font-semibold">
+                      <span className="hidden sm:inline">Jira Epic Link</span>
+                      <span className="sm:hidden">Jira</span>
+                    </span>
+                  </TableHead>
+                  <TableHead className="w-36 sm:w-52">
+                    <span className="text-xs sm:text-sm font-semibold">Notes</span>
+                  </TableHead>
+                  <TableHead className="text-right w-24 sm:w-36">
+                    <span className="text-xs sm:text-sm font-semibold">Actions</span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sortedRequests && sortedRequests.length > 0 ? (
                   sortedRequests.map((request) => (
                     <TableRow key={request.id} data-testid={`row-request-${request.id}`}>
-                      <TableCell className="font-mono text-sm w-36" data-testid={`text-request-id-${request.id}`}>
+                      <TableCell className="font-mono text-xs sm:text-sm w-24 sm:w-36 p-2 sm:p-4" data-testid={`text-request-id-${request.id}`}>
                         {request.id}
                       </TableCell>
-                      <TableCell className="font-medium w-52" data-testid={`text-request-name-${request.id}`}>
+                      <TableCell className="font-medium text-xs sm:text-sm w-36 sm:w-52 p-2 sm:p-4" data-testid={`text-request-name-${request.id}`}>
                         {request.requestName}
                       </TableCell>
-                      <TableCell className="min-w-[320px]" data-testid={`text-bau-services-${request.id}`}>
+                      <TableCell className="min-w-[200px] sm:min-w-[320px] p-2 sm:p-4" data-testid={`text-bau-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.bauServices.split('\n').map((service, idx) => (
-                            <div key={idx} className="text-sm whitespace-nowrap">{service.trim()}</div>
+                            <div key={idx} className="text-xs sm:text-sm whitespace-nowrap">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="w-48" data-testid={`text-bau-delivery-${request.id}`}>
+                      <TableCell className="w-32 sm:w-48 text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-bau-delivery-${request.id}`}>
                         {request.bauDeliveryDate ? format(new Date(request.bauDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="min-w-[320px]" data-testid={`text-uat-services-${request.id}`}>
+                      <TableCell className="min-w-[200px] sm:min-w-[320px] p-2 sm:p-4" data-testid={`text-uat-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.uatServices.split('\n').map((service, idx) => (
-                            <div key={idx} className="text-sm whitespace-nowrap">{service.trim()}</div>
+                            <div key={idx} className="text-xs sm:text-sm whitespace-nowrap">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="w-48" data-testid={`text-uat-delivery-${request.id}`}>
+                      <TableCell className="w-32 sm:w-48 text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-uat-delivery-${request.id}`}>
                         {request.uatDeliveryDate ? format(new Date(request.uatDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="w-48" data-testid={`text-production-date-${request.id}`}>
+                      <TableCell className="w-32 sm:w-48 text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-production-date-${request.id}`}>
                         {request.productionDate ? format(new Date(request.productionDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="w-36" data-testid={`text-jira-link-${request.id}`}>
+                      <TableCell className="w-28 sm:w-36 p-2 sm:p-4" data-testid={`text-jira-link-${request.id}`}>
                         {request.jiraEpicLink ? (
                           <a 
                             href={request.jiraEpicLink} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="flex items-center text-blue-600 hover:underline"
+                            className="flex items-center text-blue-600 hover:underline text-xs sm:text-sm"
                             data-testid={`link-jira-${request.id}`}
                           >
-                            Link <ExternalLink className="ml-1 h-3 w-3" />
+                            <span className="hidden sm:inline">Link</span>
+                            <span className="sm:hidden">🔗</span>
+                            <ExternalLink className="ml-1 h-3 w-3" />
                           </a>
                         ) : "-"}
                       </TableCell>
-                      <TableCell className="w-52 max-w-xs truncate" data-testid={`text-notes-${request.id}`}>
+                      <TableCell className="w-36 sm:w-52 max-w-xs truncate text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-notes-${request.id}`}>
                         {request.notes || "-"}
                       </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
+                      <TableCell className="text-right p-2 sm:p-4">
+                        <div className="flex justify-end gap-1 sm:gap-2">
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleEdit(request)}
                             data-testid={`button-edit-request-${request.id}`}
+                            className="p-1 sm:p-2"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="h-3 w-3 sm:h-4 sm:w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => handleDelete(request)}
                             data-testid={`button-delete-request-${request.id}`}
+                            className="p-1 sm:p-2"
                           >
-                            <Trash2 className="h-4 w-4 text-red-600" />
+                            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" />
                           </Button>
                         </div>
                       </TableCell>
@@ -425,7 +454,7 @@ export default function Requests() {
 
       {/* Add Request Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
           <DialogHeader>
             <DialogTitle>Add New Request</DialogTitle>
           </DialogHeader>
@@ -600,7 +629,7 @@ export default function Requests() {
 
       {/* Edit Request Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
           <DialogHeader>
             <DialogTitle>Edit Request</DialogTitle>
           </DialogHeader>
@@ -775,7 +804,7 @@ export default function Requests() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="w-[95vw] sm:w-full max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
