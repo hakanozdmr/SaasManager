@@ -66,11 +66,10 @@ export const users = pgTable("users", {
 
 export const requests = pgTable("requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  requestId: text("request_id").notNull(),
   requestName: text("request_name").notNull(),
-  bauServices: text("bau_services").array().notNull().default(sql`'{}'::text[]`),
+  bauServices: text("bau_services").notNull(),
   bauDeliveryDate: timestamp("bau_delivery_date"),
-  uatServices: text("uat_services").array().notNull().default(sql`'{}'::text[]`),
+  uatServices: text("uat_services").notNull(),
   uatDeliveryDate: timestamp("uat_delivery_date"),
   productionDate: timestamp("production_date"),
   jiraEpicLink: text("jira_epic_link"),
@@ -93,10 +92,9 @@ export const insertRequestSchema = createInsertSchema(requests).omit({
   id: true,
   createdAt: true,
 }).extend({
-  requestId: z.string().min(1, "Request ID is required"),
   requestName: z.string().min(1, "Request name is required"),
-  bauServices: z.array(z.string()).optional().default([]),
-  uatServices: z.array(z.string()).optional().default([]),
+  bauServices: z.string().min(1, "BAU services is required"),
+  uatServices: z.string().min(1, "UAT services is required"),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
