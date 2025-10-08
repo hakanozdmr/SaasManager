@@ -269,7 +269,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/requests/:id", requireAuth, async (req, res) => {
     try {
       const storage = await getStorage();
-      const validatedData = insertRequestSchema.partial().parse(req.body);
+      const validatedData = insertRequestSchema.parse(req.body);
       const request = await storage.updateRequest(req.params.id, validatedData);
       res.json(request);
     } catch (error) {

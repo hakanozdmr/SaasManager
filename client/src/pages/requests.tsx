@@ -447,7 +447,7 @@ export default function Requests() {
                   <FormItem>
                     <FormLabel>Request ID</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="817043 veya ALM449140" data-testid="input-request-id" />
+                      <Input {...field} placeholder="e.g. 817043 or ALM449140" data-testid="input-request-id" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -636,7 +636,7 @@ export default function Requests() {
                   <FormItem>
                     <FormLabel>Request ID</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled data-testid="input-edit-request-id" className="bg-muted" />
+                      <Input {...field} data-testid="input-edit-request-id" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

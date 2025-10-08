@@ -389,7 +389,6 @@ export class MongoStorage implements IStorage {
   }
 
   async createRequest(insertRequest: InsertRequest): Promise<Request> {
-    const id = new Date().getTime().toString();
     const request: Request = {
       ...insertRequest,
       bauDeliveryDate: insertRequest.bauDeliveryDate || null,
@@ -397,7 +396,6 @@ export class MongoStorage implements IStorage {
       productionDate: insertRequest.productionDate || null,
       jiraEpicLink: insertRequest.jiraEpicLink || null,
       notes: insertRequest.notes || null,
-      id,
       createdAt: new Date(),
     };
     await this.requestsCollection.insertOne(request);
@@ -416,10 +414,16 @@ export class MongoStorage implements IStorage {
     const updatedRequest: Request = {
       ...request,
       ...updates,
-      id,
     };
 
-    await this.requestsCollection.replaceOne({ id }, updatedRequest);
+    // If ID is changing, delete old record and create new one
+    if (updates.id && updates.id !== id) {
+      await this.requestsCollection.deleteOne({ id });
+      await this.requestsCollection.insertOne(updatedRequest);
+    } else {
+      await this.requestsCollection.replaceOne({ id }, updatedRequest);
+    }
+    
     return updatedRequest;
   }
 
