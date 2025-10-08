@@ -216,56 +216,56 @@ export default function Requests() {
         {requestsLoading ? (
           <div className="flex items-center justify-center p-12">Loading requests...</div>
         ) : (
-          <div className="rounded-md border">
+          <div className="rounded-md border overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Request ID</TableHead>
-                  <TableHead>Request Name</TableHead>
-                  <TableHead>BAU Services</TableHead>
-                  <TableHead>BAU Delivery Date</TableHead>
-                  <TableHead>UAT Services</TableHead>
-                  <TableHead>UAT Delivery Date</TableHead>
-                  <TableHead>Production Date</TableHead>
-                  <TableHead>Jira Epic Link</TableHead>
-                  <TableHead>Notes</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="w-32">Request ID</TableHead>
+                  <TableHead className="w-48">Request Name</TableHead>
+                  <TableHead className="min-w-[280px]">BAU Services</TableHead>
+                  <TableHead className="w-40">BAU Delivery Date</TableHead>
+                  <TableHead className="min-w-[280px]">UAT Services</TableHead>
+                  <TableHead className="w-40">UAT Delivery Date</TableHead>
+                  <TableHead className="w-40">Production Date</TableHead>
+                  <TableHead className="w-32">Jira Epic Link</TableHead>
+                  <TableHead className="w-48">Notes</TableHead>
+                  <TableHead className="text-right w-32">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {requests && requests.length > 0 ? (
                   requests.map((request) => (
                     <TableRow key={request.id} data-testid={`row-request-${request.id}`}>
-                      <TableCell className="font-mono text-sm" data-testid={`text-request-id-${request.id}`}>
+                      <TableCell className="font-mono text-sm w-32" data-testid={`text-request-id-${request.id}`}>
                         {request.id}
                       </TableCell>
-                      <TableCell className="font-medium" data-testid={`text-request-name-${request.id}`}>
+                      <TableCell className="font-medium w-48" data-testid={`text-request-name-${request.id}`}>
                         {request.requestName}
                       </TableCell>
-                      <TableCell data-testid={`text-bau-services-${request.id}`}>
+                      <TableCell className="min-w-[280px]" data-testid={`text-bau-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.bauServices.split('\n').map((service, idx) => (
-                            <div key={idx} className="text-sm">{service.trim()}</div>
+                            <div key={idx} className="text-sm whitespace-nowrap">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell data-testid={`text-bau-delivery-${request.id}`}>
+                      <TableCell className="w-40" data-testid={`text-bau-delivery-${request.id}`}>
                         {request.bauDeliveryDate ? format(new Date(request.bauDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell data-testid={`text-uat-services-${request.id}`}>
+                      <TableCell className="min-w-[280px]" data-testid={`text-uat-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.uatServices.split('\n').map((service, idx) => (
-                            <div key={idx} className="text-sm">{service.trim()}</div>
+                            <div key={idx} className="text-sm whitespace-nowrap">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell data-testid={`text-uat-delivery-${request.id}`}>
+                      <TableCell className="w-40" data-testid={`text-uat-delivery-${request.id}`}>
                         {request.uatDeliveryDate ? format(new Date(request.uatDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell data-testid={`text-production-date-${request.id}`}>
+                      <TableCell className="w-40" data-testid={`text-production-date-${request.id}`}>
                         {request.productionDate ? format(new Date(request.productionDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell data-testid={`text-jira-link-${request.id}`}>
+                      <TableCell className="w-32" data-testid={`text-jira-link-${request.id}`}>
                         {request.jiraEpicLink ? (
                           <a 
                             href={request.jiraEpicLink} 
@@ -278,7 +278,7 @@ export default function Requests() {
                           </a>
                         ) : "-"}
                       </TableCell>
-                      <TableCell className="max-w-xs truncate" data-testid={`text-notes-${request.id}`}>
+                      <TableCell className="w-48 max-w-xs truncate" data-testid={`text-notes-${request.id}`}>
                         {request.notes || "-"}
                       </TableCell>
                       <TableCell className="text-right">
