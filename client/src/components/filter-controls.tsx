@@ -44,7 +44,7 @@ export function FilterControls({
                 data-testid="button-show-all"
               >
                 <LayoutGrid className="w-4 h-4 mr-2" />
-                Show All
+                Hepsini Göster
               </Button>
               <Button
                 variant={isPaginated ? "default" : "outline"}
@@ -53,13 +53,13 @@ export function FilterControls({
                 data-testid="button-paginated"
               >
                 <List className="w-4 h-4 mr-2" />
-                Paginated
+                Sayfalı
               </Button>
             </div>
             
             {isPaginated && (
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-muted-foreground">Items per page:</span>
+                <span className="text-sm text-muted-foreground">Sayfa başına:</span>
                 <Select
                   value={pageSize.toString()}
                   onValueChange={(value) => onPageSizeChange(parseInt(value))}
@@ -83,7 +83,7 @@ export function FilterControls({
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 type="text"
-                placeholder="Search services..."
+                placeholder="Servis ara..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
                 className="pl-10 pr-4 py-2 w-64"
@@ -92,7 +92,7 @@ export function FilterControls({
             </div>
             <Button onClick={onAddServiceClick} data-testid="button-add-service">
               <Plus className="w-4 h-4 mr-2" />
-              Add Service
+              Servis Ekle
             </Button>
           </div>
         </div>

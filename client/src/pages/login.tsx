@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { User } from "lucide-react";
 
 const loginFormSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  username: z.string().min(1, "Kullanıcı adı gereklidir"),
 });
 
 type LoginForm = z.infer<typeof loginFormSchema>;
@@ -36,15 +36,15 @@ export default function Login() {
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Logged in successfully",
+        title: "Başarılı",
+        description: "Başarıyla giriş yapıldı",
       });
       setLocation("/");
     },
     onError: (error: Error) => {
       toast({
-        title: "Login Failed",
-        description: error.message || "Invalid username",
+        title: "Giriş Başarısız",
+        description: error.message || "Geçersiz kullanıcı adı",
         variant: "destructive",
       });
     },
@@ -63,9 +63,9 @@ export default function Login() {
               <User className="w-8 h-8 text-primary-foreground" />
             </div>
           </div>
-          <CardTitle className="text-2xl text-center">Microservices Manager</CardTitle>
+          <CardTitle className="text-2xl text-center">Mikroservis Yöneticisi</CardTitle>
           <CardDescription className="text-center">
-            Enter your username to access the dashboard
+            Panele erişmek için kullanıcı adınızı girin
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -76,11 +76,11 @@ export default function Login() {
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Kullanıcı Adı</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Enter your username"
+                        placeholder="Kullanıcı adınızı girin"
                         autoComplete="username"
                         data-testid="input-username"
                       />
@@ -95,7 +95,7 @@ export default function Login() {
                 disabled={loginMutation.isPending}
                 data-testid="button-login"
               >
-                {loginMutation.isPending ? "Logging in..." : "Login"}
+                {loginMutation.isPending ? "Giriş yapılıyor..." : "Giriş Yap"}
               </Button>
             </form>
           </Form>

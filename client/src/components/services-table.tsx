@@ -48,8 +48,8 @@ export function ServicesTable({
       queryClient.invalidateQueries({ queryKey: ["/api/activities"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       toast({
-        title: "Success!",
-        description: "Version updated successfully!",
+        title: "Başarılı!",
+        description: "Versiyon başarıyla güncellendi!",
       });
       setPendingChanges(prev => {
         const newPendingChanges = { ...prev };
@@ -59,8 +59,8 @@ export function ServicesTable({
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update version",
+        title: "Hata",
+        description: "Versiyon güncellenemedi",
         variant: "destructive",
       });
     }
@@ -172,7 +172,7 @@ export function ServicesTable({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Service Versions</CardTitle>
+          <CardTitle>Servis Versiyonları</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -188,8 +188,8 @@ export function ServicesTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Service Versions</CardTitle>
-        <p className="text-sm text-muted-foreground">Manage microservice versions across different environments</p>
+        <CardTitle>Servis Versiyonları</CardTitle>
+        <p className="text-sm text-muted-foreground">Farklı ortamlardaki mikroservis versiyonlarını yönetin</p>
       </CardHeader>
       
       <CardContent className="p-0">
@@ -197,12 +197,12 @@ export function ServicesTable({
           <table className="w-full">
             <thead className="bg-muted">
               <tr>
-                <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">Service Name</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">Servis Adı</th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">BAU</th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">UAT</th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">PROD</th>
-                <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">Last Updated</th>
-                <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">Actions</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">Son Güncelleme</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-muted-foreground">İşlemler</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -236,7 +236,7 @@ export function ServicesTable({
                           </Badge>
                           <Input
                             type="text"
-                            placeholder="Enter version"
+                            placeholder="Versiyon girin"
                             value={pendingChanges[service.name]?.[env] || service[`${env}Version` as keyof Service] as string}
                             onChange={(e) => handleVersionChange(service.name, env, e.target.value)}
                             className="w-full text-sm"
@@ -261,7 +261,7 @@ export function ServicesTable({
                           data-testid={`button-save-${service.name}`}
                         >
                           <Save className="w-4 h-4 mr-1" />
-                          Save
+                          Kaydet
                         </Button>
                         <Button
                           variant="ghost"
@@ -293,7 +293,7 @@ export function ServicesTable({
         {isPaginated && totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-border">
             <div className="text-sm text-muted-foreground">
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredServices.length)} of {filteredServices.length} services
+              {filteredServices.length} servisten {startIndex + 1} - {Math.min(endIndex, filteredServices.length)} arası gösteriliyor
             </div>
             
             <div className="flex items-center space-x-2">
@@ -305,7 +305,7 @@ export function ServicesTable({
                 data-testid="button-prev-page"
               >
                 <ChevronLeft className="w-4 h-4" />
-                Previous
+                Önceki
               </Button>
               
               <div className="flex items-center space-x-1">
@@ -336,7 +336,7 @@ export function ServicesTable({
                 disabled={currentPage === totalPages}
                 data-testid="button-next-page"
               >
-                Next
+                Sonraki
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>

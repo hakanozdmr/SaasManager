@@ -100,14 +100,14 @@ export default function Requests() {
       setIsAddDialogOpen(false);
       addForm.reset();
       toast({
-        title: "Success",
-        description: "Request created successfully",
+        title: "Başarılı",
+        description: "Talep başarıyla oluşturuldu",
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to create request",
+        title: "Hata",
+        description: "Talep oluşturulamadı",
         variant: "destructive",
       });
     },
@@ -122,14 +122,14 @@ export default function Requests() {
       setIsEditDialogOpen(false);
       setSelectedRequest(null);
       toast({
-        title: "Success",
-        description: "Request updated successfully",
+        title: "Başarılı",
+        description: "Talep başarıyla güncellendi",
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to update request",
+        title: "Hata",
+        description: "Talep güncellenemedi",
         variant: "destructive",
       });
     },
@@ -144,14 +144,14 @@ export default function Requests() {
       setIsDeleteDialogOpen(false);
       setSelectedRequest(null);
       toast({
-        title: "Success",
-        description: "Request deleted successfully",
+        title: "Başarılı",
+        description: "Talep başarıyla silindi",
       });
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to delete request",
+        title: "Hata",
+        description: "Talep silinemedi",
         variant: "destructive",
       });
     },
@@ -247,7 +247,7 @@ export default function Requests() {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen">Yükleniyor...</div>;
   }
 
   return (
@@ -256,19 +256,19 @@ export default function Requests() {
       
       <main className="max-w-[1600px] mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold">Requests</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Talepler</h1>
           <Button 
             onClick={() => setIsAddDialogOpen(true)}
             data-testid="button-add-request"
             className="w-full sm:w-auto"
           >
             <Plus className="h-4 w-4 mr-2" />
-            New Request
+            Yeni Talep
           </Button>
         </div>
 
         {requestsLoading ? (
-          <div className="flex items-center justify-center p-12">Loading requests...</div>
+          <div className="flex items-center justify-center p-12">Talepler yükleniyor...</div>
         ) : (
           <div className="rounded-md border">
             <Table>
@@ -281,7 +281,7 @@ export default function Requests() {
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-request-id"
                     >
-                      Request ID
+                      Talep ID
                       <SortIcon column="id" />
                     </Button>
                   </TableHead>
@@ -292,12 +292,12 @@ export default function Requests() {
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-request-name"
                     >
-                      Request Name
+                      Talep Adı
                       <SortIcon column="requestName" />
                     </Button>
                   </TableHead>
                   <TableHead className="w-[17%]">
-                    <span className="text-xs sm:text-sm font-semibold">BAU Services</span>
+                    <span className="text-xs sm:text-sm font-semibold">BAU Servisleri</span>
                   </TableHead>
                   <TableHead className="w-[9%]">
                     <Button
@@ -306,12 +306,12 @@ export default function Requests() {
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-bau-delivery-date"
                     >
-                      BAU Delivery
+                      BAU Teslimat
                       <SortIcon column="bauDeliveryDate" />
                     </Button>
                   </TableHead>
                   <TableHead className="w-[17%]">
-                    <span className="text-xs sm:text-sm font-semibold">UAT Services</span>
+                    <span className="text-xs sm:text-sm font-semibold">UAT Servisleri</span>
                   </TableHead>
                   <TableHead className="w-[9%]">
                     <Button
@@ -320,7 +320,7 @@ export default function Requests() {
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-uat-delivery-date"
                     >
-                      UAT Delivery
+                      UAT Teslimat
                       <SortIcon column="uatDeliveryDate" />
                     </Button>
                   </TableHead>
@@ -331,7 +331,7 @@ export default function Requests() {
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-production-date"
                     >
-                      Production
+                      Prod. Tarihi
                       <SortIcon column="productionDate" />
                     </Button>
                   </TableHead>
@@ -339,10 +339,10 @@ export default function Requests() {
                     <span className="text-xs sm:text-sm font-semibold">Jira</span>
                   </TableHead>
                   <TableHead className="w-[8%]">
-                    <span className="text-xs sm:text-sm font-semibold">Notes</span>
+                    <span className="text-xs sm:text-sm font-semibold">Notlar</span>
                   </TableHead>
                   <TableHead className="text-right w-[7%]">
-                    <span className="text-xs sm:text-sm font-semibold">Actions</span>
+                    <span className="text-xs sm:text-sm font-semibold">İşlemler</span>
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -422,7 +422,7 @@ export default function Requests() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
-                      No requests found. Click "New Request" to create one.
+                      Talep bulunamadı. Oluşturmak için "Yeni Talep" butonuna tıklayın.
                     </TableCell>
                   </TableRow>
                 )}
@@ -436,7 +436,7 @@ export default function Requests() {
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
           <DialogHeader>
-            <DialogTitle>Add New Request</DialogTitle>
+            <DialogTitle>Yeni Talep Ekle</DialogTitle>
           </DialogHeader>
           <Form {...addForm}>
             <form onSubmit={addForm.handleSubmit(onAddSubmit)} className="space-y-4">
@@ -445,7 +445,7 @@ export default function Requests() {
                 name="id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Request ID</FormLabel>
+                    <FormLabel>Talep ID</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="e.g. 817043 or ALM449140" data-testid="input-request-id" />
                     </FormControl>
@@ -459,7 +459,7 @@ export default function Requests() {
                 name="requestName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Request Name</FormLabel>
+                    <FormLabel>Talep Adı</FormLabel>
                     <FormControl>
                       <Input {...field} data-testid="input-request-name" />
                     </FormControl>
@@ -473,7 +473,7 @@ export default function Requests() {
                 name="bauServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BAU Services (her satırda bir servis)</FormLabel>
+                    <FormLabel>BAU Servisleri (her satırda bir servis)</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
@@ -492,7 +492,7 @@ export default function Requests() {
                 name="bauDeliveryDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BAU Delivery Date</FormLabel>
+                    <FormLabel>BAU Teslimat Tarihi</FormLabel>
                     <FormControl>
                       <Input 
                         type="date" 
@@ -511,7 +511,7 @@ export default function Requests() {
                 name="uatServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UAT Services (her satırda bir servis)</FormLabel>
+                    <FormLabel>UAT Servisleri (her satırda bir servis)</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
@@ -530,7 +530,7 @@ export default function Requests() {
                 name="uatDeliveryDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UAT Delivery Date</FormLabel>
+                    <FormLabel>UAT Teslimat Tarihi</FormLabel>
                     <FormControl>
                       <Input 
                         type="date" 
@@ -549,7 +549,7 @@ export default function Requests() {
                 name="productionDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Production Date</FormLabel>
+                    <FormLabel>Prod. Tarihi</FormLabel>
                     <FormControl>
                       <Input 
                         type="date" 
@@ -568,7 +568,7 @@ export default function Requests() {
                 name="jiraEpicLink"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Jira Epic Link</FormLabel>
+                    <FormLabel>Jira Linki</FormLabel>
                     <FormControl>
                       <Input 
                         {...field} 
@@ -586,7 +586,7 @@ export default function Requests() {
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Notes</FormLabel>
+                    <FormLabel>Notlar</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
@@ -606,14 +606,14 @@ export default function Requests() {
                   onClick={() => setIsAddDialogOpen(false)}
                   data-testid="button-cancel-add"
                 >
-                  Cancel
+                  İptal
                 </Button>
                 <Button 
                   type="submit" 
                   disabled={createMutation.isPending}
                   data-testid="button-submit-add"
                 >
-                  {createMutation.isPending ? "Creating..." : "Create Request"}
+                  {createMutation.isPending ? "Oluşturuluyor..." : "Talep Oluştur"}
                 </Button>
               </DialogFooter>
             </form>
@@ -625,7 +625,7 @@ export default function Requests() {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto w-[95vw] sm:w-full">
           <DialogHeader>
-            <DialogTitle>Edit Request</DialogTitle>
+            <DialogTitle>Talep Düzenle</DialogTitle>
           </DialogHeader>
           <Form {...editForm}>
             <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
@@ -634,7 +634,7 @@ export default function Requests() {
                 name="id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Request ID</FormLabel>
+                    <FormLabel>Talep ID</FormLabel>
                     <FormControl>
                       <Input {...field} data-testid="input-edit-request-id" />
                     </FormControl>
@@ -648,7 +648,7 @@ export default function Requests() {
                 name="requestName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Request Name</FormLabel>
+                    <FormLabel>Talep Adı</FormLabel>
                     <FormControl>
                       <Input {...field} data-testid="input-edit-request-name" />
                     </FormControl>
@@ -662,7 +662,7 @@ export default function Requests() {
                 name="bauServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BAU Services (her satırda bir servis)</FormLabel>
+                    <FormLabel>BAU Servisleri (her satırda bir servis)</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
@@ -681,7 +681,7 @@ export default function Requests() {
                 name="bauDeliveryDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BAU Delivery Date</FormLabel>
+                    <FormLabel>BAU Teslimat Tarihi</FormLabel>
                     <FormControl>
                       <Input 
                         type="date" 
@@ -700,7 +700,7 @@ export default function Requests() {
                 name="uatServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UAT Services (her satırda bir servis)</FormLabel>
+                    <FormLabel>UAT Servisleri (her satırda bir servis)</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
@@ -719,7 +719,7 @@ export default function Requests() {
                 name="uatDeliveryDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UAT Delivery Date</FormLabel>
+                    <FormLabel>UAT Teslimat Tarihi</FormLabel>
                     <FormControl>
                       <Input 
                         type="date" 
@@ -738,7 +738,7 @@ export default function Requests() {
                 name="productionDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Production Date</FormLabel>
+                    <FormLabel>Prod. Tarihi</FormLabel>
                     <FormControl>
                       <Input 
                         type="date" 
@@ -757,7 +757,7 @@ export default function Requests() {
                 name="jiraEpicLink"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Jira Epic Link</FormLabel>
+                    <FormLabel>Jira Linki</FormLabel>
                     <FormControl>
                       <Input 
                         {...field} 
@@ -775,7 +775,7 @@ export default function Requests() {
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Notes</FormLabel>
+                    <FormLabel>Notlar</FormLabel>
                     <FormControl>
                       <Textarea 
                         {...field} 
@@ -795,14 +795,14 @@ export default function Requests() {
                   onClick={() => setIsEditDialogOpen(false)}
                   data-testid="button-cancel-edit"
                 >
-                  Cancel
+                  İptal
                 </Button>
                 <Button 
                   type="submit" 
                   disabled={updateMutation.isPending}
                   data-testid="button-submit-edit"
                 >
-                  {updateMutation.isPending ? "Updating..." : "Update Request"}
+                  {updateMutation.isPending ? "Güncelleniyor..." : "Talebi Güncelle"}
                 </Button>
               </DialogFooter>
             </form>
@@ -814,20 +814,20 @@ export default function Requests() {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent className="w-[95vw] sm:w-full max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Emin misiniz?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the request "{selectedRequest?.requestName}". 
-              This action cannot be undone.
+              "{selectedRequest?.requestName}" talebi kalıcı olarak silinecek. 
+              Bu işlem geri alınamaz.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel data-testid="button-cancel-delete">Cancel</AlertDialogCancel>
+            <AlertDialogCancel data-testid="button-cancel-delete">İptal</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => selectedRequest && deleteMutation.mutate(selectedRequest.id)}
               disabled={deleteMutation.isPending}
               data-testid="button-confirm-delete"
             >
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMutation.isPending ? "Siliniyor..." : "Sil"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

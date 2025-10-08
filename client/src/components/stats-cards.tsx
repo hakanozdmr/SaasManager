@@ -30,7 +30,7 @@ export function StatsCards() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Services</p>
+              <p className="text-sm text-muted-foreground">Toplam Servis</p>
               <p className="text-2xl font-semibold text-foreground" data-testid="text-total-services">
                 {stats?.totalServices || 0}
               </p>

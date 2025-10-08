@@ -16,13 +16,13 @@ export function DashboardHeader() {
     try {
       await queryClient.invalidateQueries();
       toast({
-        title: "Success!",
-        description: "Data refreshed successfully!",
+        title: "Başarılı!",
+        description: "Veriler başarıyla yenilendi!",
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to refresh data",
+        title: "Hata",
+        description: "Veriler yenilenemedi",
         variant: "destructive",
       });
     }
@@ -45,7 +45,7 @@ export function DashboardHeader() {
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <Group className="text-primary text-2xl w-8 h-8" />
-              <h1 className="text-xl font-semibold text-foreground">Microservices Manager</h1>
+              <h1 className="text-xl font-semibold text-foreground">Mikroservis Yöneticisi</h1>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -56,7 +56,7 @@ export function DashboardHeader() {
                 data-testid="button-requests"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                Requests
+                Talepler
               </Button>
             </Link>
             {isAdmin && (
@@ -67,7 +67,7 @@ export function DashboardHeader() {
                   data-testid="button-user-management"
                 >
                   <Users className="w-4 h-4 mr-2" />
-                  User Management
+                  Kullanıcı Yönetimi
                 </Button>
               </Link>
             )}
@@ -78,14 +78,14 @@ export function DashboardHeader() {
               data-testid="button-refresh"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
-              Refresh
+              Yenile
             </Button>
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                 <User className="text-primary-foreground w-4 h-4" />
               </div>
               <span className="text-sm text-muted-foreground" data-testid="text-username">
-                {user?.username || "Guest"}
+                {user?.username || "Misafir"}
               </span>
             </div>
             <Button 
@@ -95,7 +95,7 @@ export function DashboardHeader() {
               data-testid="button-logout"
             >
               <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              Çıkış Yap
             </Button>
           </div>
         </div>

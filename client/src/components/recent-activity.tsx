@@ -117,7 +117,7 @@ export function RecentActivity() {
     return (
       <Card className="mt-8">
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
+          <CardTitle>Son Aktiviteler</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="animate-pulse space-y-4">
@@ -133,14 +133,14 @@ export function RecentActivity() {
   return (
     <Card className="mt-8">
       <CardHeader>
-        <CardTitle>Recent Activity</CardTitle>
-        <p className="text-sm text-muted-foreground">Latest version changes and deployments</p>
+        <CardTitle>Son Aktiviteler</CardTitle>
+        <p className="text-sm text-muted-foreground">Son versiyon değişiklikleri ve dağıtımlar</p>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {activities.length === 0 ? (
             <p className="text-muted-foreground text-center py-8" data-testid="text-no-activities">
-              No recent activities found
+              Henüz aktivite bulunamadı
             </p>
           ) : (
             activities.slice(0, 10).map((activity) => (
