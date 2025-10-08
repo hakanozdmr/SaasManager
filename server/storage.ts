@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Service, type InsertService, type Activity, type InsertActivity, type UpdateServiceVersionWithUser } from "@shared/schema";
+import { type User, type InsertUser, type Service, type InsertService, type Activity, type InsertActivity, type UpdateServiceVersionWithUser, type Request, type InsertRequest } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { MongoStorage } from "./mongodb-storage";
 
@@ -17,6 +17,13 @@ export interface IStorage {
   createServiceWithActivity(service: InsertService, username: string): Promise<Service>;
   updateServiceVersion(update: UpdateServiceVersionWithUser): Promise<Service>;
   
+  // Request management
+  getAllRequests(): Promise<Request[]>;
+  getRequest(id: string): Promise<Request | undefined>;
+  createRequest(request: InsertRequest): Promise<Request>;
+  updateRequest(id: string, request: Partial<InsertRequest>): Promise<Request>;
+  deleteRequest(id: string): Promise<void>;
+  
   // Activity tracking
   getAllActivities(): Promise<Activity[]>;
   createActivity(activity: InsertActivity): Promise<Activity>;
@@ -34,11 +41,13 @@ export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private services: Map<string, Service>;
   private activities: Map<string, Activity>;
+  private requests: Map<string, Request>;
 
   constructor() {
     this.users = new Map();
     this.services = new Map();
     this.activities = new Map();
+    this.requests = new Map();
     
     // Initialize with sample data
     this.initializeSampleData();
@@ -323,6 +332,56 @@ export class MemStorage implements IStorage {
       uatServices,
       pendingUpdates
     };
+  }
+
+  async getAllRequests(): Promise<Request[]> {
+    return Array.from(this.requests.values()).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async getRequest(id: string): Promise<Request | undefined> {
+    return this.requests.get(id);
+  }
+
+  async createRequest(insertRequest: InsertRequest): Promise<Request> {
+    const id = randomUUID();
+    const request: Request = {
+      ...insertRequest,
+      bauDeliveryDate: insertRequest.bauDeliveryDate || null,
+      uatDeliveryDate: insertRequest.uatDeliveryDate || null,
+      productionDate: insertRequest.productionDate || null,
+      jiraEpicLink: insertRequest.jiraEpicLink || null,
+      notes: insertRequest.notes || null,
+      id,
+      createdAt: new Date()
+    };
+    this.requests.set(id, request);
+    return request;
+  }
+
+  async updateRequest(id: string, updates: Partial<InsertRequest>): Promise<Request> {
+    const request = await this.getRequest(id);
+    if (!request) {
+      throw new Error(`Request ${id} not found`);
+    }
+
+    const updatedRequest: Request = {
+      ...request,
+      ...updates,
+      id
+    };
+    
+    this.requests.set(id, updatedRequest);
+    return updatedRequest;
+  }
+
+  async deleteRequest(id: string): Promise<void> {
+    const request = await this.getRequest(id);
+    if (!request) {
+      throw new Error(`Request ${id} not found`);
+    }
+    this.requests.delete(id);
   }
 }
 

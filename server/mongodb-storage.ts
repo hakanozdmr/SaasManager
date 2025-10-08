@@ -7,6 +7,8 @@ import {
   type Activity,
   type InsertActivity,
   type UpdateServiceVersionWithUser,
+  type Request,
+  type InsertRequest,
 } from "@shared/schema";
 import { IStorage } from "./storage";
 
@@ -16,6 +18,7 @@ export class MongoStorage implements IStorage {
   private usersCollection: Collection<User>;
   private servicesCollection: Collection<Service>;
   private activitiesCollection: Collection<Activity>;
+  private requestsCollection: Collection<Request>;
 
   constructor() {
     let uri = process.env.MONGODB_URI;
@@ -39,6 +42,7 @@ export class MongoStorage implements IStorage {
     this.usersCollection = this.db.collection<User>("users");
     this.servicesCollection = this.db.collection<Service>("services");
     this.activitiesCollection = this.db.collection<Activity>("activities");
+    this.requestsCollection = this.db.collection<Request>("requests");
   }
 
   async connect(): Promise<void> {
@@ -369,5 +373,61 @@ export class MongoStorage implements IStorage {
       uatServices,
       pendingUpdates,
     };
+  }
+
+  async getAllRequests(): Promise<Request[]> {
+    const requests = await this.requestsCollection
+      .find()
+      .sort({ createdAt: -1 })
+      .toArray();
+    return requests;
+  }
+
+  async getRequest(id: string): Promise<Request | undefined> {
+    const request = await this.requestsCollection.findOne({ id });
+    return request || undefined;
+  }
+
+  async createRequest(insertRequest: InsertRequest): Promise<Request> {
+    const id = new Date().getTime().toString();
+    const request: Request = {
+      ...insertRequest,
+      bauDeliveryDate: insertRequest.bauDeliveryDate || null,
+      uatDeliveryDate: insertRequest.uatDeliveryDate || null,
+      productionDate: insertRequest.productionDate || null,
+      jiraEpicLink: insertRequest.jiraEpicLink || null,
+      notes: insertRequest.notes || null,
+      id,
+      createdAt: new Date(),
+    };
+    await this.requestsCollection.insertOne(request);
+    return request;
+  }
+
+  async updateRequest(
+    id: string,
+    updates: Partial<InsertRequest>
+  ): Promise<Request> {
+    const request = await this.getRequest(id);
+    if (!request) {
+      throw new Error(`Request ${id} not found`);
+    }
+
+    const updatedRequest: Request = {
+      ...request,
+      ...updates,
+      id,
+    };
+
+    await this.requestsCollection.replaceOne({ id }, updatedRequest);
+    return updatedRequest;
+  }
+
+  async deleteRequest(id: string): Promise<void> {
+    const request = await this.getRequest(id);
+    if (!request) {
+      throw new Error(`Request ${id} not found`);
+    }
+    await this.requestsCollection.deleteOne({ id });
   }
 }
