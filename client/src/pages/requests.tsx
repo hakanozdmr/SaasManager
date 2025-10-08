@@ -244,7 +244,7 @@ export default function Requests() {
                       </TableCell>
                       <TableCell data-testid={`text-bau-services-${request.id}`}>
                         <div className="space-y-1">
-                          {request.bauServices.split(',').map((service, idx) => (
+                          {request.bauServices.split('\n').map((service, idx) => (
                             <div key={idx} className="text-sm">{service.trim()}</div>
                           ))}
                         </div>
@@ -254,7 +254,7 @@ export default function Requests() {
                       </TableCell>
                       <TableCell data-testid={`text-uat-services-${request.id}`}>
                         <div className="space-y-1">
-                          {request.uatServices.split(',').map((service, idx) => (
+                          {request.uatServices.split('\n').map((service, idx) => (
                             <div key={idx} className="text-sm">{service.trim()}</div>
                           ))}
                         </div>
@@ -343,9 +343,14 @@ export default function Requests() {
                 name="bauServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BAU Services</FormLabel>
+                    <FormLabel>BAU Services (her satırda bir servis)</FormLabel>
                     <FormControl>
-                      <Input {...field} data-testid="input-bau-services" />
+                      <Textarea 
+                        {...field} 
+                        data-testid="input-bau-services" 
+                        rows={5}
+                        placeholder="applicability: 1.1.3&#10;enricher: 2.0.32&#10;..."
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -376,9 +381,14 @@ export default function Requests() {
                 name="uatServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UAT Services</FormLabel>
+                    <FormLabel>UAT Services (her satırda bir servis)</FormLabel>
                     <FormControl>
-                      <Input {...field} data-testid="input-uat-services" />
+                      <Textarea 
+                        {...field} 
+                        data-testid="input-uat-services" 
+                        rows={5}
+                        placeholder="applicability: 1.1.3&#10;enricher: 2.0.32&#10;..."
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -508,9 +518,14 @@ export default function Requests() {
                 name="bauServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>BAU Services</FormLabel>
+                    <FormLabel>BAU Services (her satırda bir servis)</FormLabel>
                     <FormControl>
-                      <Input {...field} data-testid="input-edit-bau-services" />
+                      <Textarea 
+                        {...field} 
+                        data-testid="input-edit-bau-services" 
+                        rows={5}
+                        placeholder="applicability: 1.1.3&#10;enricher: 2.0.32&#10;..."
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -541,9 +556,14 @@ export default function Requests() {
                 name="uatServices"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>UAT Services</FormLabel>
+                    <FormLabel>UAT Services (her satırda bir servis)</FormLabel>
                     <FormControl>
-                      <Input {...field} data-testid="input-edit-uat-services" />
+                      <Textarea 
+                        {...field} 
+                        data-testid="input-edit-uat-services" 
+                        rows={5}
+                        placeholder="applicability: 1.1.3&#10;enricher: 2.0.32&#10;..."
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
