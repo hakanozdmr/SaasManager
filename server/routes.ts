@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { getStorage } from "./storage";
-import { insertServiceSchema, updateServiceVersionSchema, loginSchema, insertUserSchema, type User } from "@shared/schema";
+import { insertServiceSchema, updateServiceVersionSchema, loginSchema, insertUserSchema, insertRequestSchema, type User } from "@shared/schema";
 import { z } from "zod";
 import session from "express-session";
 import memorystore from "memorystore";
@@ -222,6 +222,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(stats);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Get all requests
+  app.get("/api/requests", requireAuth, async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const requests = await storage.getAllRequests();
+      res.json(requests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch requests" });
+    }
+  });
+
+  // Get request by ID
+  app.get("/api/requests/:id", requireAuth, async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const request = await storage.getRequest(req.params.id);
+      if (!request) {
+        return res.status(404).json({ message: "Request not found" });
+      }
+      res.json(request);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch request" });
+    }
+  });
+
+  // Create new request
+  app.post("/api/requests", requireAuth, async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const validatedData = insertRequestSchema.parse(req.body);
+      const request = await storage.createRequest(validatedData);
+      res.status(201).json(request);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid request data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create request" });
+    }
+  });
+
+  // Update request
+  app.put("/api/requests/:id", requireAuth, async (req, res) => {
+    try {
+      const storage = await getStorage();
+      const validatedData = insertRequestSchema.partial().parse(req.body);
+      const request = await storage.updateRequest(req.params.id, validatedData);
+      res.json(request);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid request data", errors: error.errors });
+      }
+      if (error instanceof Error && error.message.includes("not found")) {
+        return res.status(404).json({ message: error.message });
+      }
+      res.status(500).json({ message: "Failed to update request" });
+    }
+  });
+
+  // Delete request
+  app.delete("/api/requests/:id", requireAuth, async (req, res) => {
+    try {
+      const storage = await getStorage();
+      await storage.deleteRequest(req.params.id);
+      res.json({ message: "Request deleted successfully" });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("not found")) {
+        return res.status(404).json({ message: error.message });
+      }
+      res.status(500).json({ message: "Failed to delete request" });
     }
   });
 
