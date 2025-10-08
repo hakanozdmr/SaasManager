@@ -243,13 +243,21 @@ export default function Requests() {
                         {request.requestName}
                       </TableCell>
                       <TableCell data-testid={`text-bau-services-${request.id}`}>
-                        {request.bauServices}
+                        <div className="space-y-1">
+                          {request.bauServices.split(',').map((service, idx) => (
+                            <div key={idx} className="text-sm">{service.trim()}</div>
+                          ))}
+                        </div>
                       </TableCell>
                       <TableCell data-testid={`text-bau-delivery-${request.id}`}>
                         {request.bauDeliveryDate ? format(new Date(request.bauDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
                       <TableCell data-testid={`text-uat-services-${request.id}`}>
-                        {request.uatServices}
+                        <div className="space-y-1">
+                          {request.uatServices.split(',').map((service, idx) => (
+                            <div key={idx} className="text-sm">{service.trim()}</div>
+                          ))}
+                        </div>
                       </TableCell>
                       <TableCell data-testid={`text-uat-delivery-${request.id}`}>
                         {request.uatDeliveryDate ? format(new Date(request.uatDeliveryDate), "MMM dd, yyyy") : "-"}
