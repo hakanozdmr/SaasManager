@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { type Request } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
+import { Plus, Pencil, Trash2, ExternalLink, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -57,6 +57,9 @@ const requestFormSchema = insertRequestSchema.extend({
 
 type RequestFormData = z.infer<typeof requestFormSchema>;
 
+type SortColumn = 'id' | 'requestName' | 'bauDeliveryDate' | 'uatDeliveryDate' | 'productionDate';
+type SortDirection = 'asc' | 'desc' | null;
+
 export default function Requests() {
   const { isLoading, requireAuth } = useAuth();
   const { toast } = useToast();
@@ -64,6 +67,8 @@ export default function Requests() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null);
+  const [sortColumn, setSortColumn] = useState<SortColumn | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
   useEffect(() => {
     requireAuth();
@@ -193,6 +198,58 @@ export default function Requests() {
     }
   };
 
+  const handleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortColumn(null);
+        setSortDirection(null);
+      } else {
+        setSortDirection('asc');
+      }
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortedRequests = () => {
+    if (!requests || !sortColumn || !sortDirection) return requests;
+    
+    return [...requests].sort((a, b) => {
+      const aValue = a[sortColumn];
+      const bValue = b[sortColumn];
+      
+      if (aValue === null || aValue === undefined) return 1;
+      if (bValue === null || bValue === undefined) return -1;
+      
+      if (sortColumn.includes('Date')) {
+        const aTime = new Date(aValue as string).getTime();
+        const bTime = new Date(bValue as string).getTime();
+        if (aTime < bTime) return sortDirection === 'asc' ? -1 : 1;
+        if (aTime > bTime) return sortDirection === 'asc' ? 1 : -1;
+        return 0;
+      }
+      
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const sortedRequests = getSortedRequests();
+
+  const SortIcon = ({ column }: { column: SortColumn }) => {
+    if (sortColumn !== column) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    if (sortDirection === 'asc') {
+      return <ArrowUp className="ml-2 h-4 w-4" />;
+    }
+    return <ArrowDown className="ml-2 h-4 w-4" />;
+  };
+
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
@@ -201,7 +258,7 @@ export default function Requests() {
     <div className="bg-background min-h-screen">
       <DashboardHeader />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Requests</h1>
           <Button 
@@ -216,56 +273,106 @@ export default function Requests() {
         {requestsLoading ? (
           <div className="flex items-center justify-center p-12">Loading requests...</div>
         ) : (
-          <div className="rounded-md border overflow-x-auto">
+          <div className="rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-32">Request ID</TableHead>
-                  <TableHead className="w-48">Request Name</TableHead>
-                  <TableHead className="min-w-[280px]">BAU Services</TableHead>
-                  <TableHead className="w-40">BAU Delivery Date</TableHead>
-                  <TableHead className="min-w-[280px]">UAT Services</TableHead>
-                  <TableHead className="w-40">UAT Delivery Date</TableHead>
-                  <TableHead className="w-40">Production Date</TableHead>
-                  <TableHead className="w-32">Jira Epic Link</TableHead>
-                  <TableHead className="w-48">Notes</TableHead>
-                  <TableHead className="text-right w-32">Actions</TableHead>
+                  <TableHead className="w-36">
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort('id')}
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      data-testid="sort-request-id"
+                    >
+                      Request ID
+                      <SortIcon column="id" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-52">
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort('requestName')}
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      data-testid="sort-request-name"
+                    >
+                      Request Name
+                      <SortIcon column="requestName" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="min-w-[320px]">BAU Services</TableHead>
+                  <TableHead className="w-48">
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort('bauDeliveryDate')}
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      data-testid="sort-bau-delivery-date"
+                    >
+                      BAU Delivery Date
+                      <SortIcon column="bauDeliveryDate" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="min-w-[320px]">UAT Services</TableHead>
+                  <TableHead className="w-48">
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort('uatDeliveryDate')}
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      data-testid="sort-uat-delivery-date"
+                    >
+                      UAT Delivery Date
+                      <SortIcon column="uatDeliveryDate" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-48">
+                    <Button
+                      variant="ghost"
+                      onClick={() => handleSort('productionDate')}
+                      className="flex items-center hover:bg-transparent p-0 h-auto font-semibold"
+                      data-testid="sort-production-date"
+                    >
+                      Production Date
+                      <SortIcon column="productionDate" />
+                    </Button>
+                  </TableHead>
+                  <TableHead className="w-36">Jira Epic Link</TableHead>
+                  <TableHead className="w-52">Notes</TableHead>
+                  <TableHead className="text-right w-36">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {requests && requests.length > 0 ? (
-                  requests.map((request) => (
+                {sortedRequests && sortedRequests.length > 0 ? (
+                  sortedRequests.map((request) => (
                     <TableRow key={request.id} data-testid={`row-request-${request.id}`}>
-                      <TableCell className="font-mono text-sm w-32" data-testid={`text-request-id-${request.id}`}>
+                      <TableCell className="font-mono text-sm w-36" data-testid={`text-request-id-${request.id}`}>
                         {request.id}
                       </TableCell>
-                      <TableCell className="font-medium w-48" data-testid={`text-request-name-${request.id}`}>
+                      <TableCell className="font-medium w-52" data-testid={`text-request-name-${request.id}`}>
                         {request.requestName}
                       </TableCell>
-                      <TableCell className="min-w-[280px]" data-testid={`text-bau-services-${request.id}`}>
+                      <TableCell className="min-w-[320px]" data-testid={`text-bau-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.bauServices.split('\n').map((service, idx) => (
                             <div key={idx} className="text-sm whitespace-nowrap">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="w-40" data-testid={`text-bau-delivery-${request.id}`}>
+                      <TableCell className="w-48" data-testid={`text-bau-delivery-${request.id}`}>
                         {request.bauDeliveryDate ? format(new Date(request.bauDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="min-w-[280px]" data-testid={`text-uat-services-${request.id}`}>
+                      <TableCell className="min-w-[320px]" data-testid={`text-uat-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.uatServices.split('\n').map((service, idx) => (
                             <div key={idx} className="text-sm whitespace-nowrap">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="w-40" data-testid={`text-uat-delivery-${request.id}`}>
+                      <TableCell className="w-48" data-testid={`text-uat-delivery-${request.id}`}>
                         {request.uatDeliveryDate ? format(new Date(request.uatDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="w-40" data-testid={`text-production-date-${request.id}`}>
+                      <TableCell className="w-48" data-testid={`text-production-date-${request.id}`}>
                         {request.productionDate ? format(new Date(request.productionDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="w-32" data-testid={`text-jira-link-${request.id}`}>
+                      <TableCell className="w-36" data-testid={`text-jira-link-${request.id}`}>
                         {request.jiraEpicLink ? (
                           <a 
                             href={request.jiraEpicLink} 
@@ -278,7 +385,7 @@ export default function Requests() {
                           </a>
                         ) : "-"}
                       </TableCell>
-                      <TableCell className="w-48 max-w-xs truncate" data-testid={`text-notes-${request.id}`}>
+                      <TableCell className="w-52 max-w-xs truncate" data-testid={`text-notes-${request.id}`}>
                         {request.notes || "-"}
                       </TableCell>
                       <TableCell className="text-right">
