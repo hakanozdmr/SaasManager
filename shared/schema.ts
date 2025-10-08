@@ -95,6 +95,11 @@ export const insertRequestSchema = createInsertSchema(requests).omit({
   requestName: z.string().min(1, "Request name is required"),
   bauServices: z.string().min(1, "BAU services is required"),
   uatServices: z.string().min(1, "UAT services is required"),
+  bauDeliveryDate: z.coerce.date().nullable().optional(),
+  uatDeliveryDate: z.coerce.date().nullable().optional(),
+  productionDate: z.coerce.date().nullable().optional(),
+  jiraEpicLink: z.string().nullable().optional(),
+  notes: z.string().nullable().optional(),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
