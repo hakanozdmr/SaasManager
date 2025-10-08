@@ -64,6 +64,20 @@ export const users = pgTable("users", {
   role: text("role").notNull().default("user"),
 });
 
+export const requests = pgTable("requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  requestId: text("request_id").notNull(),
+  requestName: text("request_name").notNull(),
+  bauServices: text("bau_services").array().notNull().default(sql`'{}'::text[]`),
+  bauDeliveryDate: timestamp("bau_delivery_date"),
+  uatServices: text("uat_services").array().notNull().default(sql`'{}'::text[]`),
+  uatDeliveryDate: timestamp("uat_delivery_date"),
+  productionDate: timestamp("production_date"),
+  jiraEpicLink: text("jira_epic_link"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
 }).extend({
@@ -75,6 +89,18 @@ export const loginSchema = z.object({
   username: z.string().min(1),
 });
 
+export const insertRequestSchema = createInsertSchema(requests).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  requestId: z.string().min(1, "Request ID is required"),
+  requestName: z.string().min(1, "Request name is required"),
+  bauServices: z.array(z.string()).optional().default([]),
+  uatServices: z.array(z.string()).optional().default([]),
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type LoginRequest = z.infer<typeof loginSchema>;
+export type Request = typeof requests.$inferSelect;
+export type InsertRequest = z.infer<typeof insertRequestSchema>;
