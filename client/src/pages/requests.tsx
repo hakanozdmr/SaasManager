@@ -75,6 +75,7 @@ export default function Requests() {
   const addForm = useForm<RequestFormData>({
     resolver: zodResolver(requestFormSchema),
     defaultValues: {
+      id: "",
       requestName: "",
       bauServices: "",
       bauDeliveryDate: null,
@@ -159,6 +160,7 @@ export default function Requests() {
   const handleEdit = (request: Request) => {
     setSelectedRequest(request);
     editForm.reset({
+      id: request.id,
       requestName: request.requestName,
       bauServices: request.bauServices,
       bauDeliveryDate: request.bauDeliveryDate 
@@ -440,6 +442,20 @@ export default function Requests() {
             <form onSubmit={addForm.handleSubmit(onAddSubmit)} className="space-y-4">
               <FormField
                 control={addForm.control}
+                name="id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Request ID</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="817043 veya ALM449140" data-testid="input-request-id" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={addForm.control}
                 name="requestName"
                 render={({ field }) => (
                   <FormItem>
@@ -613,6 +629,20 @@ export default function Requests() {
           </DialogHeader>
           <Form {...editForm}>
             <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
+              <FormField
+                control={editForm.control}
+                name="id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Request ID</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled data-testid="input-edit-request-id" className="bg-muted" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={editForm.control}
                 name="requestName"

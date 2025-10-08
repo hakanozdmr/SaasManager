@@ -65,7 +65,7 @@ export const users = pgTable("users", {
 });
 
 export const requests = pgTable("requests", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  id: varchar("id").primaryKey().notNull(),
   requestName: text("request_name").notNull(),
   bauServices: text("bau_services").notNull().default(""),
   bauDeliveryDate: timestamp("bau_delivery_date"),
@@ -89,9 +89,9 @@ export const loginSchema = z.object({
 });
 
 const baseRequestSchema = createInsertSchema(requests).omit({
-  id: true,
   createdAt: true,
 }).extend({
+  id: z.string().min(1, "Request ID is required"),
   requestName: z.string().min(1, "Request name is required"),
   bauServices: z.string().optional().default(""),
   uatServices: z.string().optional().default(""),
