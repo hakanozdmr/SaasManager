@@ -274,92 +274,78 @@ export default function Requests() {
         {requestsLoading ? (
           <div className="flex items-center justify-center p-12">Loading requests...</div>
         ) : (
-          <div className="rounded-md border overflow-x-auto">
-            <Table className="min-w-[1200px]">
+          <div className="rounded-md border">
+            <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-24 sm:w-36">
+                  <TableHead className="w-[8%]">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('id')}
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-request-id"
                     >
-                      <span className="hidden sm:inline">Request ID</span>
-                      <span className="sm:hidden">ID</span>
+                      Request ID
                       <SortIcon column="id" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-36 sm:w-52">
+                  <TableHead className="w-[10%]">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('requestName')}
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-request-name"
                     >
-                      <span className="hidden sm:inline">Request Name</span>
-                      <span className="sm:hidden">Name</span>
+                      Request Name
                       <SortIcon column="requestName" />
                     </Button>
                   </TableHead>
-                  <TableHead className="min-w-[200px] sm:min-w-[320px]">
-                    <span className="text-xs sm:text-sm font-semibold">
-                      <span className="hidden sm:inline">BAU Services</span>
-                      <span className="sm:hidden">BAU Svcs</span>
-                    </span>
+                  <TableHead className="w-[17%]">
+                    <span className="text-xs sm:text-sm font-semibold">BAU Services</span>
                   </TableHead>
-                  <TableHead className="w-32 sm:w-48">
+                  <TableHead className="w-[9%]">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('bauDeliveryDate')}
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-bau-delivery-date"
                     >
-                      <span className="hidden sm:inline">BAU Delivery Date</span>
-                      <span className="sm:hidden">BAU Date</span>
+                      BAU Delivery
                       <SortIcon column="bauDeliveryDate" />
                     </Button>
                   </TableHead>
-                  <TableHead className="min-w-[200px] sm:min-w-[320px]">
-                    <span className="text-xs sm:text-sm font-semibold">
-                      <span className="hidden sm:inline">UAT Services</span>
-                      <span className="sm:hidden">UAT Svcs</span>
-                    </span>
+                  <TableHead className="w-[17%]">
+                    <span className="text-xs sm:text-sm font-semibold">UAT Services</span>
                   </TableHead>
-                  <TableHead className="w-32 sm:w-48">
+                  <TableHead className="w-[9%]">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('uatDeliveryDate')}
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-uat-delivery-date"
                     >
-                      <span className="hidden sm:inline">UAT Delivery Date</span>
-                      <span className="sm:hidden">UAT Date</span>
+                      UAT Delivery
                       <SortIcon column="uatDeliveryDate" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-32 sm:w-48">
+                  <TableHead className="w-[9%]">
                     <Button
                       variant="ghost"
                       onClick={() => handleSort('productionDate')}
                       className="flex items-center hover:bg-transparent p-0 h-auto font-semibold text-xs sm:text-sm"
                       data-testid="sort-production-date"
                     >
-                      <span className="hidden sm:inline">Production Date</span>
-                      <span className="sm:hidden">Prod Date</span>
+                      Production
                       <SortIcon column="productionDate" />
                     </Button>
                   </TableHead>
-                  <TableHead className="w-28 sm:w-36">
-                    <span className="text-xs sm:text-sm font-semibold">
-                      <span className="hidden sm:inline">Jira Epic Link</span>
-                      <span className="sm:hidden">Jira</span>
-                    </span>
+                  <TableHead className="w-[6%]">
+                    <span className="text-xs sm:text-sm font-semibold">Jira</span>
                   </TableHead>
-                  <TableHead className="w-36 sm:w-52">
+                  <TableHead className="w-[8%]">
                     <span className="text-xs sm:text-sm font-semibold">Notes</span>
                   </TableHead>
-                  <TableHead className="text-right w-24 sm:w-36">
+                  <TableHead className="text-right w-[7%]">
                     <span className="text-xs sm:text-sm font-semibold">Actions</span>
                   </TableHead>
                 </TableRow>
@@ -368,36 +354,36 @@ export default function Requests() {
                 {sortedRequests && sortedRequests.length > 0 ? (
                   sortedRequests.map((request) => (
                     <TableRow key={request.id} data-testid={`row-request-${request.id}`}>
-                      <TableCell className="font-mono text-xs sm:text-sm w-24 sm:w-36 p-2 sm:p-4" data-testid={`text-request-id-${request.id}`}>
+                      <TableCell className="font-mono text-xs sm:text-sm w-[8%] p-2 sm:p-4" data-testid={`text-request-id-${request.id}`}>
                         {request.id}
                       </TableCell>
-                      <TableCell className="font-medium text-xs sm:text-sm w-36 sm:w-52 p-2 sm:p-4" data-testid={`text-request-name-${request.id}`}>
+                      <TableCell className="font-medium text-xs sm:text-sm w-[10%] p-2 sm:p-4" data-testid={`text-request-name-${request.id}`}>
                         {request.requestName}
                       </TableCell>
-                      <TableCell className="min-w-[200px] sm:min-w-[320px] p-2 sm:p-4" data-testid={`text-bau-services-${request.id}`}>
+                      <TableCell className="w-[17%] p-2 sm:p-4" data-testid={`text-bau-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.bauServices.split('\n').map((service, idx) => (
-                            <div key={idx} className="text-xs sm:text-sm whitespace-nowrap">{service.trim()}</div>
+                            <div key={idx} className="text-xs sm:text-sm break-words">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="w-32 sm:w-48 text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-bau-delivery-${request.id}`}>
+                      <TableCell className="w-[9%] text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-bau-delivery-${request.id}`}>
                         {request.bauDeliveryDate ? format(new Date(request.bauDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="min-w-[200px] sm:min-w-[320px] p-2 sm:p-4" data-testid={`text-uat-services-${request.id}`}>
+                      <TableCell className="w-[17%] p-2 sm:p-4" data-testid={`text-uat-services-${request.id}`}>
                         <div className="space-y-1">
                           {request.uatServices.split('\n').map((service, idx) => (
-                            <div key={idx} className="text-xs sm:text-sm whitespace-nowrap">{service.trim()}</div>
+                            <div key={idx} className="text-xs sm:text-sm break-words">{service.trim()}</div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="w-32 sm:w-48 text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-uat-delivery-${request.id}`}>
+                      <TableCell className="w-[9%] text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-uat-delivery-${request.id}`}>
                         {request.uatDeliveryDate ? format(new Date(request.uatDeliveryDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="w-32 sm:w-48 text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-production-date-${request.id}`}>
+                      <TableCell className="w-[9%] text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-production-date-${request.id}`}>
                         {request.productionDate ? format(new Date(request.productionDate), "MMM dd, yyyy") : "-"}
                       </TableCell>
-                      <TableCell className="w-28 sm:w-36 p-2 sm:p-4" data-testid={`text-jira-link-${request.id}`}>
+                      <TableCell className="w-[6%] p-2 sm:p-4" data-testid={`text-jira-link-${request.id}`}>
                         {request.jiraEpicLink ? (
                           <a 
                             href={request.jiraEpicLink} 
@@ -406,16 +392,14 @@ export default function Requests() {
                             className="flex items-center text-blue-600 hover:underline text-xs sm:text-sm"
                             data-testid={`link-jira-${request.id}`}
                           >
-                            <span className="hidden sm:inline">Link</span>
-                            <span className="sm:hidden">🔗</span>
-                            <ExternalLink className="ml-1 h-3 w-3" />
+                            Link <ExternalLink className="ml-1 h-3 w-3" />
                           </a>
                         ) : "-"}
                       </TableCell>
-                      <TableCell className="w-36 sm:w-52 max-w-xs truncate text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-notes-${request.id}`}>
+                      <TableCell className="w-[8%] truncate text-xs sm:text-sm p-2 sm:p-4" data-testid={`text-notes-${request.id}`}>
                         {request.notes || "-"}
                       </TableCell>
-                      <TableCell className="text-right p-2 sm:p-4">
+                      <TableCell className="text-right w-[7%] p-2 sm:p-4">
                         <div className="flex justify-end gap-1 sm:gap-2">
                           <Button
                             variant="ghost"
